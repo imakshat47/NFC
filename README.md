@@ -2,7 +2,13 @@
 1. python -m venv nfc
 2. .\nfc\Scripts\activate
 3. Install Requirements 
-pip install flask joblib numpy
+pip install flask
+pip install joblib
+pip install numpy
+pip install scikit-learn
+pip install pandas
+
+
 4. python app.py
 Keep Server Running.
 
