@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splitwise App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container my-5">
+        <h1 class="text-center text-primary mb-4">Splitwise-like App</h1>
+
+        <!-- Add User -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4>Add User</h4>
+            </div>
+            <div class="card-body">
+                <form action="/add_user" method="POST" class="row g-3">
+                    <div class="col-md-8">
+                        <input type="text" name="name" class="form-control" placeholder="Enter user name" required>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">Add User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Expense -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h4>Add Expense</h4>
+            </div>
+            <div class="card-body">
+                <form action="/add_expense" method="POST" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="payer" class="form-label">Payer</label>
+                        <select name="payer" id="payer" class="form-select" required>
+                            <option value="" disabled selected>Select a user</option>
+                            {% for user in users %}
+                                <option value="{{ user }}">{{ user }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" name="amount" id="amount" class="form-control" step="0.01" placeholder="Enter amount" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="participants" class="form-label">Participants</label>
+                        <div class="form-check">
+                            {% for user in users %}
+                            <input type="checkbox" name="participants" value="{{ user }}" class="form-check-input" id="participant-{{ user }}">
+                            <label class="form-check-label" for="participant-{{ user }}">{{ user }}</label><br> {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-success w-100">Add Expense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Balances -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h4>Balances</h4>
+            </div>
+            <div class="card-body">
+                {% if balances %}
+                <table class="table table-striped table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            {% for user in users %}
+                            <th>{{ user }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user, balance in balances.items() %}
+                        <tr>
+                            <td>{{ user }}</td>
+                            {% for other_user in users %}
+                            <td>{{ balance.get(other_user, 0) | round(2) }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-center">No balances available yet. Add some expenses!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Reset All Balances -->
+        <form action="/reset" method="POST" class="text-center">
+            <button type="submit" class="btn btn-danger">Reset All Balances</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
