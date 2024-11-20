@@ -23,9 +23,35 @@ def home():
 
 @app.route('/login')
 def login():
-    return render_template("login.html")
+    return render_template("login1.html")
 
+@app.route("/test")
+def test():
+    """Render the dashboard for logged-in users."""
+    # Check if the user is logged in
+    if "email" not in session:
+        flash("You need to log in first.", "danger")
+        return redirect(url_for("home"))
+    return render_template("test.html", email=session["email"])
 
+@app.route("/set_session", methods=["POST"])
+def set_session():
+    """
+    Set user session after successful Firebase authentication on the frontend.
+    The email is sent from the client-side JavaScript.
+    """
+    email = request.json.get("email")
+    if email:
+        session["email"] = email
+        return {"message": "Session set successfully"}, 200
+    return {"error": "Email not provided"}, 400
+
+@app.route("/logout")
+def logout():
+    """Log the user out."""
+    session.pop("email", None)  # Remove email from session
+    flash("You have been logged out.", "info")
+    return  render_template("index.html")
 # In-memory data storage
 users = []  # List of users
 expenses = []  # List of expenses
