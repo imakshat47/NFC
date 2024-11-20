@@ -299,7 +299,7 @@
 
     <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-22826239-1"></script> -->
 
-    <script>
+    <!-- <script>
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
@@ -308,7 +308,7 @@
         gtag('js', new Date());
 
         gtag('config', 'UA-22826239-1');
-    </script>
+    </script> -->
 
 
 
@@ -386,9 +386,7 @@
     </div>
 
     </div>
-    
-
-
+  
 
     <main class="bg-facets">
         <div class="container mx-auto px-4 md:px-8 pt-8">
@@ -397,8 +395,25 @@
                     <div class="text-3xl font-mont mb-4">
                         Log in
                     </div>
+                    <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
 
-                    <form class="login-form" action="/set_session" method="POST">
+
+                    <form id="login-form"  method="POST">
+                        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+
+<!-- Your Custom Script -->
+
+
+    <script type="module" src="/static/test.js" ></script>
                         <label for="credentials_identity">Email address</label>
                         <div class="input mb-4">
                             <input autocapitalize="off" type="email" name="credentials[identity]" id="credentials_identity" />
@@ -437,7 +452,8 @@
                             <input value="80a1e767-1c06-47af-b972-f6240934ad9a" autocomplete="off" type="hidden" name="sequence[token]" id="sequence_token" />
                         </div>
                         <div class="py-4">
-                            <input type="submit" name="commit" value="Log in" class="cta-button block font-mont rounded bg-teal-darker text-white shadow px-4 py-2 text-center w-full" data-disable-with="Log in" />
+                            <button type="submit" name="commit"  class="cta-button block font-mont rounded bg-teal-darker text-white shadow px-4 py-2 text-center w-full" data-disable-with="Log in">
+                            Login </button>
                         </div>
                     </form>
                     <a class="block text-center font-mont font-semibold text-teal-darker py-2" href="/password_reset">Forgot your password?</a>
@@ -465,8 +481,6 @@
   
 
 
-    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"8e5228431ca6595d","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2024.10.5","token":"d788d0b487f64a4c951cb13fb4a5fadd"}'
-        crossorigin="anonymous"></script>
         <div class="container mx-auto">
         <!-- Include the footer -->
         {% include 'footer.html' %}

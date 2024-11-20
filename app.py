@@ -1,12 +1,12 @@
 # Import necessary libraries
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template,session
 import joblib
 import numpy as np
 import pandas as pd
 
 # Initialize the Flask app
 app = Flask(__name__)
-
+app.secret_key = "secret_key"
 # Load the trained model (ensure the model file path is correct)
 try:
     model = joblib.load('model.pkl')
@@ -30,27 +30,31 @@ def test():
     """Render the dashboard for logged-in users."""
     # Check if the user is logged in
     if "email" not in session:
-        flash("You need to log in first.", "danger")
+        alert("You need to log in first.", "danger")
         return redirect(url_for("home"))
     return render_template("test.html", email=session["email"])
 
 @app.route("/set_session", methods=["POST"])
 def set_session():
     """
-    Set user session after successful Firebase authentication on the frontend.
-    The email is sent from the client-side JavaScript.
+    Set the user session after successful login from Firebase.
+    This route expects a JSON payload with an 'email' field.
     """
-    email = request.json.get("email")
+    # Get the JSON data from the request
+    data = request.json 
+    # This assumes the request body is JSON
+    email = data.get("email")
+
     if email:
-        session["email"] = email
-        return {"message": "Session set successfully"}, 200
+        session["email"] = email  # Set email in session
+        return {"message": "Session set successfully"} ,200
     return {"error": "Email not provided"}, 400
 
 @app.route("/logout")
 def logout():
     """Log the user out."""
     session.pop("email", None)  # Remove email from session
-    flash("You have been logged out.", "info")
+    #flash("You have been logged out.", "info")
     return  render_template("index.html")
 # In-memory data storage
 users = []  # List of users
