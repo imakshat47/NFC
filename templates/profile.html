@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #4caf50;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .dashboard {
+      display: flex;
+      align-items: center;
+      background-color: #4caf50;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
+    }
+
+    .circle {
+      background-color: #3e8e41;
+      border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-right: 30px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .circle h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .circle h1 {
+      margin: 5px 0;
+      font-size: 2rem;
+    }
+
+    .circle p {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .title {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .info p {
+      margin: 5px 0;
+      font-size: 1rem;
+    }
+
+    .info p span {
+      font-weight: bold;
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #e8f5e9;
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .btn {
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #2e7d32;
+      color: #fff;
+      margin-right: 10px;
+    }
+
+    .btn-primary:hover {
+      background-color: #1b5e20;
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      color: #4caf50;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+  <body>
+    <div class="dashboard">
+      <div class="circle">
+        <h2>Pagal Ayush</h2>
+        <h1>₹0.00</h1>
+        <p>should pay</p>
+      </div>
+      <div class="info">
+        <h1 class="title">NFC</h1>
+        <p>Transactions: <span>0</span></p>
+        <p>Members: <span>1</span></p>
+        <p>Total spent: <span>₹0</span></p>
+        <p class="note">Anyone can pay</p>
+        <div class="buttons">
+          <button class="btn btn-primary">Show charts</button>
+          <button class="btn btn-secondary">More</button>
+        </div>
+      </div>
+          
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

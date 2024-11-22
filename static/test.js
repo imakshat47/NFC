@@ -36,11 +36,11 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
             headers: {
                 "Content-Type": "application/json",  // Ensure correct Content-Type
             },
-            body: JSON.stringify({ email: userCredential.user.email })  // Serialize email as JSON
+            body: JSON.stringify({ uid: userCredential.user.uid })  // Serialize email as JSON
         });
 
         if (response.ok) {
-            window.location.href = "/test";  // Redirect to dashboard
+            window.location.href = "/profile";  // Redirect to dashboard
         } else {
             console.error("Failed to set session:", await response.json());
         }

@@ -7,7 +7,7 @@ pip install joblib
 pip install numpy
 pip install scikit-learn
 pip install pandas
-
+pip install firebase_admin
 
 4. python app.py
 Keep Server Running.

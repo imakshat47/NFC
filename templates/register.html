@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+        const auth = firebase.auth(app);
+
+        async function registerUser(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value;
+
+            try {
+                // Create user with Firebase Auth
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+
+                // Get unique user ID
+                const userId = userCredential.user.uid;
+
+                // Save additional user details to Firestore
+                await db.collection('users').doc(userId).set({
+                    userId: userId,
+                    username: username,
+                    email: email,
+                    phone: phone,
+                    currentBalance: 0,
+                    score: 0,
+                    createdAt: new Date()
+                });
+
+                alert('User registered successfully!');
+                // Redirect to login or another page
+                window.location.href = "login.html";
+            } catch (error) {
+                console.error('Error registering user:', error.message);
+                alert(`Error: ${error.message}`);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div style="max-width: 400px; margin: auto; padding: 20px;">
+        <h2>Register</h2>
+        <form onsubmit="registerUser(event)">
+        
+        <label for="Username">Username</label>
+        <div class="input mb-4">
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+          /><br><br>
+        </div>
+        <label for="Username">Username</label>
+        <div class="input mb-4">
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+          /><br><br>
+        </div>
+        <label for="Username">Username</label>
+        <div class="input mb-4">
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+          /><br><br>
+        </div>
+        <label for="Username">Username</label>
+        <div class="input mb-4">
+          <input
+            type="text"
+            name="username"
+            id="username"
+            required
+          /><br><br>
+        </div>
+        
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required><br><br>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
