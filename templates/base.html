@@ -570,7 +570,7 @@
 
     <link
       rel="stylesheet"
-      href="https://assets.splitwise.com/assets/motel-82ff5aea486b5a67c66619aefa9df389a82561c946813551bfee5ed0175bf3a8.css"
+      href="{{ url_for('static', filename='motel-82ff5aea486b5a67c66619aefa9df389a82561c946813551bfee5ed0175bf3a8.css') }}"
       media="all"
     />
     <link
@@ -587,7 +587,7 @@
     <link rel="canonical" href="https:///" />
 
     <title>{% block title %}My App{% endblock %}</title>
-
+<!--
     <script type="importmap" data-turbo-track="reload">
       {
         "imports": {
@@ -602,9 +602,9 @@
         }
       }
     </script>
-
+  -->
     <script
-      src="https://assets.splitwise.com/assets/es-module-shims.min-f6e61a1a9f41be4f7947efa52fef6f0b9b265d4a397ce46d39a09e1c1d044578.js"
+      src="{{ url_for('static', filename='es-module-shims.min-f6e61a1a9f41be4f7947efa52fef6f0b9b265d4a397ce46d39a09e1c1d044578.js')}}"
       async="async"
       data-turbo-track="reload"
     ></script>

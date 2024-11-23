@@ -414,7 +414,7 @@
 <!-- Your Custom Script -->
 
 
-    <script type="module" src="/static/test.js" ></script>
+    <script type="module" src="{{ url_for('static', filename='/static/test.js') }}" ></script>
                         <label for="credentials_identity">Email address</label>
                         <div class="input mb-4">
                             <input autocapitalize="off" type="email" name="credentials[identity]" id="credentials_identity" />

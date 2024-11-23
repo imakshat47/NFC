@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 # Initialize the Flask app
-app = Flask(__name__)
+app = Flask(__name__,static_folder="assets")
 app.secret_key = "secret_key"
 # Load the trained model (ensure the model file path is correct)
 cred = credentials.Certificate("firebase_credentials.json")
