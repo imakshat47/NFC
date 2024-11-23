@@ -1,5 +1,5 @@
 # Import necessary libraries
-from flask import Flask, request, jsonify, render_template,session
+from flask import Flask, request, jsonify, render_template,session,redirect
 import firebase_admin as fa 
 from firebase_admin import credentials, firestore,auth
 import joblib
@@ -26,119 +26,125 @@ def home():
 # @app.route('/dashbaord')
 # def dashbaord():
 #     return render_template("dashbaord.html")
+# Login Route
 @app.route('/login')
 def login():
-    print(login)
+    print("Login page accessed")
     return render_template("login.html")
+
+# Signup Route@app.route('/login')
+def login():
+    print("Login page accessed")
+    return render_template("login.html")
+
+# Signup Route
 @app.route('/signup')
 def signup():
     return render_template("signup.html")
+
+# Register Route
 @app.route("/register", methods=["POST"])
-
 def register():
-
+    """Handle user registration."""
     try:
-       
-        print("I am here at line 40")
-
+        print("Register route accessed")
         data = request.json
-
-        print(data)
+        print("Received Data:", data)
 
         # Extract data fields
-
         username = data.get("username")
-
         email = data.get("email")
-
-        password = data.get("password")  # Not recommended to store passwords directly.
-
+        password = data.get("password")
         phone = data.get("phone")
+        
+        # Create Firebase Authentication user
         try:
             user = auth.create_user(
                 email=email,
                 password=password,
                 display_name=username
             )
-           
         except Exception as e:
             print("Error creating user:", e)
             return jsonify({"message": str(e)}), 400
-      
-
-
 
         # Save additional user details to Firestore
-
         db.collection("users").document(user.uid).set({
-
             "userId": user.uid,
-
             "username": username,
-
             "email": email,
-
             "phone": phone,
-
             "currentBalance": 0,
-
             "score": 0,
-
             "createdAt": firestore.SERVER_TIMESTAMP
-
         })
-       
-        return jsonify({"message":  "Session set successfully"}), 200
-
+        print(user.uid)
+        print(f"User {user.uid} registered successfully")
+        session['uid']=user.uid
+        return jsonify({"message": "User registered successfully!", "userId": user.uid}), 200
     except Exception as e:
-
+        print("Error during registration:", e)
         return jsonify({"message": str(e)}), 500
-@app.route("/profile")
-def profile():
-    """Render the dashboard for logged-in users."""
-    # Check if the user is logged in
-    if "email" not in session:
-        alert("You need to log in first.", "danger")
-        return redirect(url_for("home"))
-    return render_template("profile.html<", uid=session["uid"])
+
+# Dashboard Route
 @app.route("/dashboard/<userId>")
 def dashboard(userId):
     """Render the dashboard for the specific user based on userId."""
     try:
-        # Fetch user data from Firestore using userId
-        user_doc = db.collection("users").document(userId).get()
+        print(f"Dashboard route accessed for userId: {userId}")
 
-        if not user_doc.exists:
+        # Fetch user document snapshot
+        user_snapshot = db.collection("users").document(userId).get()
+
+        # Check if the document exists
+        if not user_snapshot.exists:
+            print(f"No user found with userId: {userId}")
             return "User not found", 404
 
-        user = user_doc.to_dict()
+        # Convert the document snapshot to a dictionary
+        user = user_snapshot.to_dict()
+        print(f"Fetched user data: {user}")
 
         # Render the dashboard with user data
-        return render_template("dashboard.html", user=user)
+        return render_template("profile.html", user=user)
     except Exception as e:
+        print(f"Error loading dashboard: {e}")
         return f"An error occurred: {e}", 500
+
+# Profile Route (Reusing Dashboard Logic)
+@app.route("/profile")
+def profile():
+    """Render the profile for the logged-in user."""
+    print(session['uid'])
+    if "uid" not in session:
+        print("User not logged in")
+        return redirect("/login")
+
+    userId = session["uid"]  # Use session-stored UID
+    print(f"Redirecting to dashboard for UID: {userId}")
+    return redirect(f"/dashboard/{userId}")
+
+# Set Session Route
 @app.route("/set_session", methods=["POST"])
 def set_session():
-    """
-    Set the user session after successful login from Firebase.
-    This route expects a JSON payload with an 'email' field.
-    """
-    # Get the JSON data from the request
-    data = request.json 
-    # This assumes the request body is JSON
+    """Set the user session after successful login."""
+    data = request.json
     uid = data.get("uid")
+    print(f"Set session called with UID: {uid}")  # Debug
 
     if uid:
-        session["uid"] = uid  # Set email in session
-        return {"message": "Session set successfully"} ,200
-    return {"error": "Email not provided"}, 400
+        session["uid"] = uid
+        print(f"Session set for UID: {session['uid']}")  # Debug
+        return jsonify({"message": "Session set successfully!"}), 200
+    return jsonify({"error": "UID not provided"}), 400
 
+# Logout Route
 @app.route("/logout")
 def logout():
     """Log the user out."""
-    session.pop("email", None)  # Remove email from session
-    #flash("You have been logged out.", "info")
-    return  render_template("index.html")
+    session.pop("uid", None)  # Remove UID from session
+    print("User logged out")
+    return redirect("/login")
 # In-memory data storage
 users = []  # List of users
 expenses = []  # List of expenses
