@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Profiling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        form {
+            max-width: 400px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Credit Profiling</h1>
+    <form id="creditForm">
+        <label for="age">Age</label>
+        <input type="number" id="age" name="Age" required>
+
+        <label for="totalDebt">Total Debt</label>
+        <input type="number" id="totalDebt" name="TotalDebt" required>
+
+        <label for="monthlyExpenses">Monthly Expenses</label>
+        <input type="number" id="monthlyExpenses" name="MonthlyExpenses" required>
+
+        <label for="numTransactions">Number of Transactions</label>
+        <input type="number" id="numTransactions" name="NumberOfTransactions" required>
+
+        <label for="totalAmountLent">Total Amount Lent</label>
+        <input type="number" id="totalAmountLent" name="TotalAmountLent" required>
+
+        <label for="lastPaymentStatus">Last Payment Status</label>
+        <input type="number" id="lastPaymentStatus" name="LastPaymentStatus" required>
+
+        <label for="wallet">Wallet</label>
+        <input type="number" id="wallet" name="Wallet" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="response" class="response" style="display: none;"></div>
+
+    <script>
+        const form = document.getElementById('creditForm');
+        const responseDiv = document.getElementById('response');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Gather form data
+            const data = {
+                f1: document.getElementById('age').value,
+                f2: document.getElementById('totalDebt').value,
+                f3: document.getElementById('monthlyExpenses').value,
+                f4: document.getElementById('numTransactions').value,
+                f5: document.getElementById('totalAmountLent').value,
+                f6: document.getElementById('lastPaymentStatus').value,
+                f7: document.getElementById('wallet').value
+            };
+
+            // Send POST request
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error: ' + response.statusText);
+                }
+
+                const result = await response.json();
+
+                // Display the response
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `<p style="color: red;">${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

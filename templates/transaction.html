@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Transaction Management</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="nav flex-column nav-pills" role="tablist">
+                    <a class="nav-link active" id="create-tab" href="#" onclick="showTab('createTransaction')">Create Transaction</a>
+                    <a class="nav-link" id="approve-tab" href="#" onclick="showTab('approveTransaction')">Approve Transactions</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="createTransaction">
+                    <h4>Create Transaction</h4>
+                    <form>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="to" class="form-label">To</label>
+                            <select class="form-select" id="to" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-select" id="type" required>
+                                <option value="Lend">Lend</option>
+                                <option value="Borrow">Borrow</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="createTransaction()">Create Transaction</button>
+                    </form>
+                </div>
+                <div id="approveTransaction" style="display:none;">
+                    <h4>Approve Transactions</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>From</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approval-transactions"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.getElementById('createTransaction').style.display = tabId === 'createTransaction' ? 'block' : 'none';
+            document.getElementById('approveTransaction').style.display = tabId === 'approveTransaction' ? 'block' : 'none';
+        }
+
+        function loadUsers() {
+            fetch('/getUsers')
+                .then(response => response.json())
+                .then(users => {
+                    const toSelect = document.getElementById('to');
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.user_id;
+                        option.textContent = `${user.fullname} (${user.username})`;
+                        toSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }
+
+        function createTransaction() {
+            const amount = document.getElementById('amount').value;
+            const approval = document.getElementById('to').value;
+            const type = document.getElementById('type').value;
+
+            fetch('/createTransaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, approval, type }),
+            })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error('Error creating transaction:', error));
+        }
+
+        function fetchApprovalTransactions() {
+            fetch('/getApprovalTransactions')
+                .then(response => response.json())
+                .then(transactions => {
+                    const tableBody = document.getElementById('approval-transactions');
+                    tableBody.innerHTML = '';
+                    transactions.forEach(transaction => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${transaction.transaction_id}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.type}</td>
+                            <td>${transaction.created_at}</td>
+                            <td>${transaction.from_user_name}</td>
+                            <td><button class="btn btn-success" onclick="approveTransaction('${transaction.transaction_id}', this)">Approve</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching approval transactions:', error));
+        }
+
+        function approveTransaction(transactionId, button) {
+    fetch('/approveTransaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transaction_id: transactionId }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            // Remove the transaction row from the table
+            button.closest('tr').remove();
+        })
+        .catch(error => console.error('Error approving transaction:', error));
+}
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+            fetchApprovalTransactions();
+        });
+    </script>
+</body>
+</html>
