@@ -152,6 +152,7 @@ def set_session():
 @app.route('/transactions')
 def transactions():
     return render_template("transaction.html")
+
 @app.route('/getUsers', methods=['GET'])
 def get_users():
     try:
@@ -313,63 +314,63 @@ def logout():
     session.pop("uid", None)  # Remove UID from session
     print("User logged out")
     return redirect("/login")
-# In-memory data storage
-users = []  # List of users
-expenses = []  # List of expenses
-balances = {}  # Balances between users
+# # In-memory data storage
+# users = []  # List of users
+# expenses = []  # List of expenses
+# balances = {}  # Balances between users
 
-@app.route("/dashbaord")
-def dashbaord():
-    return render_template("home.html", users=users, balances=balances, expenses=expenses)
+# @app.route("/dashbaord")
+# def dashbaord():
+#     return render_template("home.html", users=users, balances=balances, expenses=expenses)
 
-# Add a new user
-@app.route('/add_user', methods=['POST'])
-def add_user():
-    name = request.form.get('name')
+# # Add a new user
+# @app.route('/add_user', methods=['POST'])
+# def add_user():
+#     name = request.form.get('name')
     
-    if not name:
-        return redirect(url_for('home', error="User name is required"))
+#     if not name:
+#         return redirect(url_for('home', error="User name is required"))
 
-    if name in users:
-        return redirect(url_for('home', error="User already exists"))
+#     if name in users:
+#         return redirect(url_for('home', error="User already exists"))
 
-    users.append(name)
-    balances[name] = {}
-    for user in users:
-        if user != name:
-            balances[name][user] = 0
-            balances[user][name] = 0
+#     users.append(name)
+#     balances[name] = {}
+#     for user in users:
+#         if user != name:
+#             balances[name][user] = 0
+#             balances[user][name] = 0
 
-    return redirect(url_for('home'))
+#     return redirect(url_for('home'))
 
-# Add an expense
-@app.route('/add_expense', methods=['POST'])
-def add_expense():
-    payer = request.form.get('payer')
-    amount = float(request.form.get('amount'))
-    participants = request.form.getlist('participants')
+# # Add an expense
+# @app.route('/add_expense', methods=['POST'])
+# def add_expense():
+#     payer = request.form.get('payer')
+#     amount = float(request.form.get('amount'))
+#     participants = request.form.getlist('participants')
 
-    if not payer or not amount or not participants:
-        return redirect(url_for('home', error="All fields are required"))
+#     if not payer or not amount or not participants:
+#         return redirect(url_for('home', error="All fields are required"))
 
-    if payer not in users or any(p not in users for p in participants):
-        return redirect(url_for('home', error="Invalid users"))
+#     if payer not in users or any(p not in users for p in participants):
+#         return redirect(url_for('home', error="Invalid users"))
 
-    # Split the amount equally
-    split_amount = amount / len(participants)
-    for participant in participants:
-        if participant != payer:
-            balances[payer][participant] += split_amount
-            balances[participant][payer] -= split_amount
+#     # Split the amount equally
+#     split_amount = amount / len(participants)
+#     for participant in participants:
+#         if participant != payer:
+#             balances[payer][participant] += split_amount
+#             balances[participant][payer] -= split_amount
 
-    expenses.append({'payer': payer, 'amount': amount, 'participants': participants})
-    return redirect(url_for('home'))
+#     expenses.append({'payer': payer, 'amount': amount, 'participants': participants})
+#     return redirect(url_for('home'))
 
-@app.route('/reset', methods=['POST'])
-def reset_balances():
-    global balances
-    balances = {user: {u: 0 for u in users if u != user} for user in users}
-    return redirect(url_for('home'))
+# @app.route('/reset', methods=['POST'])
+# def reset_balances():
+#     global balances
+#     balances = {user: {u: 0 for u in users if u != user} for user in users}
+#     return redirect(url_for('home'))
 
 
 @app.route('/predict', methods=['POST'])
