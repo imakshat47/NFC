@@ -1,5 +1,5 @@
 # Import necessary libraries
-import sys
+import sys, os
 from flask import Flask, request, jsonify, render_template,session,redirect
 import firebase_admin as fa 
 from firebase_admin import credentials, firestore,auth
@@ -237,6 +237,9 @@ def predict():
         # Handle unexpected errors
         return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    # Run the Flask app
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     # Run the Flask app
+#     app.run(debug=True)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
