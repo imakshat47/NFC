@@ -5,6 +5,9 @@ from firebase_admin import credentials, firestore,auth
 import joblib
 import numpy as np
 import pandas as pd
+from threading import Timer
+import uuid
+from datetime import datetime
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -18,7 +21,12 @@ try:
     model = joblib.load('model.pkl')
 except FileNotFoundError:
     raise FileNotFoundError("The model file 'model.pkl' was not found. Ensure it exists in the correct path.")
+pending_transactions = {}
 
+# Function to remove expired transactions
+def expire_transaction(tran_id):
+    if tran_id in pending_transactions:
+        del pending_transactions[tran_id]
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -28,19 +36,116 @@ def home():
 #     return render_template("dashbaord.html")
 # Login Route
 @app.route('/login')
-def login():
-    print("Login page accessed")
-    return render_template("login.html")
 
 # Signup Route@app.route('/login')
 def login():
     print("Login page accessed")
     return render_template("login.html")
-
+print(pending_transactions)
 # Signup Route
 @app.route('/signup')
 def signup():
     return render_template("signup.html")
+@app.route('/transactions')
+def transactions():
+    return render_template("transaction.html")
+
+
+@app.route('/getUsers', methods=['GET'])
+def get_users():
+    try:
+        users = []
+        docs = db.collection('users').stream()
+        for doc in docs:
+            user = doc.to_dict()
+            if user['userId'] != session['uid']:
+                users.append({
+                    'user_id': user['userId'],
+                    'fullname': user['fullName'],
+                    'username': user['username'],
+                })
+        return jsonify(users), 200
+    except Exception as e:
+        return jsonify({'message': 'Error fetching users', 'error': str(e)}), 500
+
+@app.route('/getApprovalTransactions', methods=['GET'])
+def get_approval_transactions():
+    try:
+        user_id = session['uid']
+        transactions = []
+        docs = db.collection('transactions').where('approval', '==', user_id).stream()
+        
+        for doc in docs:
+            transaction = doc.to_dict()
+            from_user_id = transaction['from_user']
+            
+            # Fetch full name of the 'from_user' (transaction initiator)
+            user_doc = db.collection('users').document(from_user_id).get()
+            if user_doc.exists:
+                user = user_doc.to_dict()
+                transaction['from_user_name'] = user['fullName']
+            transactions.append(transaction)
+        
+        return jsonify(transactions), 200
+    except Exception as e:
+        return jsonify({'message': 'Error fetching transactions', 'error': str(e)}), 500
+
+@app.route('/createTransaction', methods=['POST'])
+def create_transaction():
+    try:
+        data = request.json
+        transaction_ref = db.collection('transactions').document()
+        user_id = session['uid']
+        approval = data['approval']
+        transaction_type = data['type']
+        payee = approval if transaction_type == 'debit' else user_id
+        payer = user_id if transaction_type == 'debit' else approval
+
+        transaction_ref.set({
+            'transaction_id': transaction_ref.id,
+            'from_user': user_id,
+            'approval': approval,
+            'amount': data['amount'],
+            'type': transaction_type,
+            'payee': payee,
+            'payer': payer,
+            'created_at': datetime.utcnow(),
+            'status': 'pending'
+        })
+        return jsonify({'message': 'Transaction created successfully!', 'transaction_id': transaction_ref.id}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error creating transaction', 'error': str(e)}), 500
+
+@app.route('/approveTransaction', methods=['POST'])
+def approve_transaction():
+    try:
+        data = request.json
+        transaction_id = data['transaction_id']
+        user_id = session['uid']
+        transaction_ref = db.collection('transactions').document(transaction_id)
+        transaction = transaction_ref.get()
+
+        if not transaction.exists:
+            return jsonify({'message': 'Transaction not found'}), 404
+
+        transaction_data = transaction.to_dict()
+        if transaction_data['approval'] != user_id:
+            return jsonify({'message': 'Unauthorized approval attempt'}), 403
+
+        # Move transaction to 'approved_transactions' collection
+        db.collection('approved_transactions').document(transaction_id).set({
+            **transaction_data,
+            'approved_at': datetime.utcnow(),
+            'status': 'approved'
+        })
+
+        # Update status in the 'transactions' collection to 'approved'
+        transaction_ref.update({'status': 'approved'})
+        
+        return jsonify({'message': 'Transaction approved successfully!'}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error approving transaction', 'error': str(e)}), 500
+
 
 # Register Route
 @app.route("/register", methods=["POST"])
@@ -56,7 +161,7 @@ def register():
         email = data.get("email")
         password = data.get("password")
         phone = data.get("phone")
-        
+        fullname=data.get("fullname")
         # Create Firebase Authentication user
         try:
             user = auth.create_user(
@@ -71,11 +176,15 @@ def register():
         # Save additional user details to Firestore
         db.collection("users").document(user.uid).set({
             "userId": user.uid,
+            "fullName":fullname,
             "username": username,
             "email": email,
             "phone": phone,
             "currentBalance": 0,
             "score": 0,
+            "totalBorrowed": 0,
+            "totalLend":0,
+            "totalTransaction":0,
             "createdAt": firestore.SERVER_TIMESTAMP
         })
         print(user.uid)

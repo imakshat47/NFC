@@ -986,10 +986,10 @@
   
               <!-- Information Section -->
               <div class="info text-left">
-                <h1 class="title text-xl font-bold mb-4">{{ user.username }}</h1>
-                <p class="mb-2">Transactions: <span class="font-semibold">{{ user.transactions if user.transactions else 0 }}</span></p>
-                <p class="mb-2">Members: <span class="font-semibold">{{ user.members if user.members else 1 }}</span></p>
-                <p class="mb-2">Total spent: <span class="font-semibold text-[#3e8e41]">₹{{ user.currentBalance }}</span></p>
+                <h1 class="title text-xl font-bold mb-4">{{ user.fullName }}</h1>
+                <p class="mb-2">Transactions: <span class="font-semibold"> ₹{{ user.totalTransaction }}</span></p>
+                <p class="mb-2">Total Lend: <span class="font-semibold"> ₹{{ user.totalLend  }}</span></p>
+                <p class="mb-2">Total Borrowed: <span class="font-semibold text-[#3e8e41]"> ₹{{ user.totalBorrowed }}</span></p>
                 <p class="note text-gray-500 italic mt-4">Anyone can pay</p>
   
                 <!-- Buttons Section -->

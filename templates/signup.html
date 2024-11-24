@@ -459,6 +459,7 @@
                     email: document.getElementById("email").value,
                     password: document.getElementById("password").value,
                     phone: document.getElementById("phone").value,
+                    fullname:document.getElementById("fullname").value,
                   };
                   
                   try {
@@ -487,7 +488,15 @@
                   }
                 });
               </script>
-            
+            <label for="Fullname">Full Name</label>
+            <div class="input mb-4">
+              <input
+                type="text"
+                name="fullname"
+                id="fullname"
+                required
+              /><br /><br />
+            </div>
               <label for="Username">Username</label>
               <div class="input mb-4">
                 <input
