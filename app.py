@@ -22,7 +22,8 @@ def expire_transaction(tran_id):
     if tran_id in pending_transactions:
         del pending_transactions[tran_id]
 
-print(db)
+session['uid']=None
+
 try:
     model = joblib.load('model.pkl')
 except FileNotFoundError:
@@ -30,6 +31,8 @@ except FileNotFoundError:
 
 @app.route("/")
 def home():
+    if session['uid']:
+        return redirect("/dashboard/"+session['uid'])
     return render_template("index.html")
 @app.route('/getApprovalTransactions', methods=['GET'])
 def get_approval_transactions():
@@ -62,13 +65,16 @@ def get_approval_transactions():
         return jsonify(transactions), 200
     except Exception as e:
         return jsonify({'message': 'Error fetching transactions', 'error': str(e)}), 500
+    
 # @app.route('/dashbaord')
 # def dashbaord():
 #     return render_template("dashbaord.html")
+
 # Login Route
 @app.route('/login')
 def login():
-    print("Login page accessed")
+    if session['uid']:
+        return redirect("/dashboard/"+session['uid'])
     return render_template("login.html")
 
 @app.route('/creditProfiling')
@@ -100,6 +106,8 @@ def creditProfiling():
 # Signup Route
 @app.route('/signup')
 def signup():
+    if session['uid']:
+        return redirect("/dashboard/"+session['uid'])
     return render_template("signup.html")
 
 # Register Route
