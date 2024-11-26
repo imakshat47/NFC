@@ -1,7 +1,7 @@
 # Import necessary libraries
-from flask import Flask, request, jsonify, render_template,session,redirect
 import firebase_admin as fa 
 from firebase_admin import credentials, firestore,auth
+from flask import Flask, request, jsonify, render_template,session,redirect
 import joblib
 import numpy as np
 import pandas as pd
@@ -22,7 +22,7 @@ def expire_transaction(tran_id):
     if tran_id in pending_transactions:
         del pending_transactions[tran_id]
 
-session['uid']=None
+user_id=None
 
 try:
     model = joblib.load('model.pkl')
@@ -31,8 +31,9 @@ except FileNotFoundError:
 
 @app.route("/")
 def home():
-    if session['uid']:
-        return redirect("/dashboard/"+session['uid'])
+    user_id = session['uid']
+    if user_id:
+        return redirect("/dashboard/"+user_id)
     return render_template("index.html")
 @app.route('/getApprovalTransactions', methods=['GET'])
 def get_approval_transactions():
@@ -73,8 +74,9 @@ def get_approval_transactions():
 # Login Route
 @app.route('/login')
 def login():
-    if session['uid']:
-        return redirect("/dashboard/"+session['uid'])
+    user_id = session['uid']
+    if user_id:
+        return redirect("/dashboard/"+user_id)
     return render_template("login.html")
 
 @app.route('/creditProfiling')
@@ -106,8 +108,9 @@ def creditProfiling():
 # Signup Route
 @app.route('/signup')
 def signup():
-    if session['uid']:
-        return redirect("/dashboard/"+session['uid'])
+    user_id = session['uid']
+    if user_id:
+        return redirect("/dashboard/"+user_id)
     return render_template("signup.html")
 
 # Register Route
