@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from threading import Timer
 import uuid
+import os
 from datetime import datetime
 
 # Initialize the Flask app
@@ -459,4 +460,6 @@ def predict():
 
 if __name__ == '__main__':
     # Run the Flask app
-    app.run(debug=True)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use PORT provided by Render, default to 5000 for local dev
+    app.run(host='0.0.0.0', port=port)
