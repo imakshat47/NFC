@@ -14,3 +14,6 @@ Keep Server Running.
 
 5. Open a new cmd window:
 Invoke-WebRequest -Uri "http://127.0.0.1:5000/predict" -Method POST -Headers @{ "Content-Type" = "application/json" } -Body '{"f1": 10, "f2": false}'
+
+Last Modified:
+26/11 8:45

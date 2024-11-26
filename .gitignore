@@ -167,3 +167,5 @@ nfc
 ./nfc
 
 firebase_credentials.json
+firebase_credentials*
+*credentials*
