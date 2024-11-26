@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" class="">
-  <head>
-    <script>
+
+<head>
+    <!-- <script>
       var _rollbarConfig = {
         accessToken: "e6f02c3ea02843769f37758afcce81ae",
         captureUncaught: true,
@@ -499,36 +500,19 @@
       gtag("config", "UA-22826239-1", {
         page_path: "/index",
       });
-    </script>
+    </script> -->
 
     <meta charset="utf-8" />
     <meta name="referrer" content="origin" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta
-      name="apple-itunes-app"
-      content="app-id=458023433, app-argument=nfc://open"
-    />
-    <meta
-      name="description"
-      content="nfc is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="apple-itunes-app" content="app-id=458023433, app-argument=nfc://open" />
+    <meta name="description" content="nfc is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!" />
     <meta name="color-scheme" content="light only" />
 
-    <meta
-      property="og:description"
-      content="nfc is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!"
-    />
+    <meta property="og:description" content="nfc is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!" />
     <meta property="og:title" content="Split expenses with friends." />
-    <meta
-      property="og:image"
-      content="http://127.0.0.1:5000/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png"
-    />
-    <meta property="og:image:secure_url" content="".{% block localhost
-    %}localhost{% endblock
-    %}."/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png">
+    <meta property="og:image" content="http://127.0.0.1:5000/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png" />
+    <meta property="og:image:secure_url" content="" .{% block localhost %}localhost{% endblock %}. "/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png">
     <meta property="og:image:alt" content="nfc logo" />
     <meta property="og:site_name" content="nfc" />
     <meta property="og:type" content="website" />
@@ -549,45 +533,26 @@
     <meta property="og:locale:alternate" content="emoji" />
 
     <meta name="twitter:card" content="app" />
-    <meta
-      name="twitter:description"
-      content="nfc is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!"
-    />
+    <meta name="twitter:description" content="nfc is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!" />
     <meta name="twitter:site" content="@nfc" />
     <meta name="twitter:app:name:iphone" content="nfc" />
     <meta name="twitter:app:id:iphone" content="458023433" />
     <meta name="twitter:app:name:googleplay" content="nfc" />
-    <meta
-      name="twitter:app:id:googleplay"
-      content="com.nfc.nfcMobile"
-    />
+    <meta name="twitter:app:id:googleplay" content="com.nfc.nfcMobile" />
 
     <meta name="csrf-param" content="authenticity_token" />
-    <meta
-      name="csrf-token"
-      content="P2q9yRoI0W92HfxAYEfj7-72jzHsZmd9J9t644ELtK48I1Z86x6utOqFvrsiY4Zwv2YVv6JGJUVrnPVRqXPV5A"
-    />
+    <meta name="csrf-token" content="P2q9yRoI0W92HfxAYEfj7-72jzHsZmd9J9t644ELtK48I1Z86x6utOqFvrsiY4Zwv2YVv6JGJUVrnPVRqXPV5A" />
 
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='motel-82ff5aea486b5a67c66619aefa9df389a82561c946813551bfee5ed0175bf3a8.css') }}"
-      media="all"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Lato:400,400i,700|Montserrat:400,600,700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='motel-82ff5aea486b5a67c66619aefa9df389a82561c946813551bfee5ed0175bf3a8.css') }}" media="all" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700|Montserrat:400,600,700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link
-      rel="apple-touch-icon-precomposed"
-      href="/apple-touch-icon-precomposed.png"
-    />
+    <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png" />
 
     <link rel="canonical" href="https:///" />
 
     <title>{% block title %}My App{% endblock %}</title>
-<!--
+    <!--
     <script type="importmap" data-turbo-track="reload">
       {
         "imports": {
@@ -603,34 +568,29 @@
       }
     </script>
   -->
-    <script
-      src="{{ url_for('static', filename='es-module-shims.min-f6e61a1a9f41be4f7947efa52fef6f0b9b265d4a397ce46d39a09e1c1d044578.js')}}"
-      async="async"
-      data-turbo-track="reload"
-    ></script>
+    <script src="{{ url_for('static', filename='es-module-shims.min-f6e61a1a9f41be4f7947efa52fef6f0b9b265d4a397ce46d39a09e1c1d044578.js')}}" async="async" data-turbo-track="reload"></script>
     <script type="module">
-      import "application";
+        import "application";
     </script>
     <script type="module">
-      import "motel";
+        import "motel";
     </script>
-  </head>
+</head>
 
-  <body class="font-sans subpixel-antialiased" id="landing-page">
+<body class="font-sans subpixel-antialiased" id="landing-page">
     <div class="container mx-auto">
-      <!-- Include the header -->
-      {% include 'header.html' %}
+        <!-- Include the header -->
+        {% include 'header.html' %}
     </div>
 
     <!-- Dynamic content block -->
-    <main class="container my-5">{% block content %} {% endblock %}</main>
+    <main class="">{% block content %} {% endblock %}</main>
 
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
-      integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
-      data-cf-beacon='{"rayId":"8e51106e0def5472","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2024.10.5","token":"d788d0b487f64a4c951cb13fb4a5fadd"}'
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    <!-- Include the footer -->
+    {% include 'footer.html' %}
+
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"8e51106e0def5472","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2024.10.5","token":"d788d0b487f64a4c951cb13fb4a5fadd"}'
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
