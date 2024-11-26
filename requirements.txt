@@ -8,7 +8,7 @@ click==8.1.7
 colorama==0.4.6
 cryptography==43.0.3
 firebase-admin==6.6.0
-Flask==3.1.0
+Flask==2.3.0
 google-api-core==2.23.0
 google-api-python-client==2.154.0
 google-auth==2.36.0
@@ -50,4 +50,4 @@ threadpoolctl==3.5.0
 tzdata==2024.2
 uritemplate==4.1.1
 urllib3==2.2.3
-Werkzeug==1.0.1
+Werkzeug==3.1.3
