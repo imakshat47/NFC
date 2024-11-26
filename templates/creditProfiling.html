@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Profiling</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .risk-high { color: red; font-weight: bold; }
+        .risk-medium { color: orange; font-weight: bold; }
+        .risk-low { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Credit Profiling</h2>
+        {% if error %}
+        <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% else %}
+        <div class="card mt-4 shadow">
+            <div class="card-header bg-primary text-white">
+                <h4>User Details</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ user.fullName }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Current Balance:</strong> {{ user.currentBalance }}</p>
+            </div>
+        </div>
+
+        <div class="card mt-4 shadow" id="prediction-card" style="display: none;">
+            <div class="card-header bg-secondary text-white">
+                <h4>Credit Profiling Result</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Credit Score:</strong> <span id="result-score"></span></p>
+                <p>
+                    <strong>Credit Profile:</strong> 
+                    <span id="result-risk" class=""></span>
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Fetch user data and send to /predict
+            
+            const userData = {
+                f1: "{{ user.age }}",
+                f2: "{{ user.totalBorrowed }}",
+                f3 : "{{ user.totalBorrowed }}",
+                f4:"{{ user.totalTransaction }}",
+                f5:"{{ user.totalLend }}",
+                f6:1,
+                f7:"{{ user.currentBalance }}"
+            };
+
+            $.ajax({
+                url: '/predict',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(userData),
+                success: function (response) {
+                    // Display the credit score
+                    $('#result-score').text(response.credit_score);
+
+                    // Calculate risk level on the frontend
+                    // console.log(response.credit_score)
+                    const score = response.credit_score;
+                    let riskLevel = "";
+                    let riskClass = "";
+                    // console.log(score)
+                    if (score >= 850) {
+                        riskLevel = "Very Good";
+                        riskClass = "risk-low";
+                    } else if (score >= 700) {
+                        riskLevel = "Good";
+                        riskClass = "risk-low";
+                    } else if (score >= 650) {
+                        riskLevel = "Low Risk";
+                        riskClass = "risk-low";
+                    } else if (score >= 500) {
+                        riskLevel = "Medium Risk";
+                        riskClass = "risk-medium";
+                    } else {
+                        riskLevel = "High Risk";
+                        riskClass = "risk-high";
+                    }
+                    // console.log(riskLevel);
+                    // Update the UI
+                    $('#result-risk').text(riskLevel).attr('class', riskClass);
+                    $('#prediction-card').fadeIn();
+                },
+                error: function () {
+                    alert('Error while fetching credit score. Please try again.');
+                }
+            });
+            
+        });
+    </script>
+</body>
+</html>

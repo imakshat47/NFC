@@ -3,55 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .side-panel {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            background-color: #343a40;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
+    <title>Transactions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Transaction Management</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="nav flex-column nav-pills" role="tablist">
+                    <a class="nav-link active" id="create-tab" href="#" onclick="showTab('createTransaction')">Create Transaction</a>
+                    <a class="nav-link" id="approve-tab" href="#" onclick="showTab('approveTransaction')">Approve Transactions</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="createTransaction">
+                    <h4>Create Transaction</h4>
+                    <form>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="to" class="form-label">To</label>
+                            <select class="form-select" id="to" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-select" id="type" required>
+                                <option value="Lend">Lend</option>
+                                <option value="Borrow">Borrow</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="createTransaction()">Create Transaction</button>
+                    </form>
+                </div>
+                <div id="approveTransaction" style="display:none;">
+                    <h4>Approve Transactions</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>From</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="approval-transactions"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        .side-panel a {
-            text-decoration: none;
-            color: white;
-            margin: 10px 0;
-        }
-
-        .side-panel a.active {
-            font-weight: bold;
-            background-color: #495057;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .main-content {
-            margin-left: 270px;
-            padding: 20px;
-        }
-    </style>
     <script>
-        function fetchUsers() {
+        function showTab(tabId) {
+            document.getElementById('createTransaction').style.display = tabId === 'createTransaction' ? 'block' : 'none';
+            document.getElementById('approveTransaction').style.display = tabId === 'approveTransaction' ? 'block' : 'none';
+        }
+
+        function loadUsers() {
             fetch('/getUsers')
                 .then(response => response.json())
                 .then(users => {
-                    const toField = document.getElementById('to');
-                    toField.innerHTML = '<option value="" disabled selected>Select a user</option>';
+                    const toSelect = document.getElementById('to');
                     users.forEach(user => {
                         const option = document.createElement('option');
                         option.value = user.user_id;
                         option.textContent = `${user.fullname} (${user.username})`;
-                        toField.appendChild(option);
+                        toSelect.appendChild(option);
                     });
                 })
                 .catch(error => console.error('Error fetching users:', error));
+        }
+
+        function createTransaction() {
+            const amount = document.getElementById('amount').value;
+            const approval = document.getElementById('to').value;
+            const type = document.getElementById('type').value;
+
+            fetch('/createTransaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount, approval, type }),
+            })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error('Error creating transaction:', error));
         }
 
         function fetchApprovalTransactions() {
@@ -76,88 +116,24 @@
                 .catch(error => console.error('Error fetching approval transactions:', error));
         }
 
-        function createTransaction() {
-            const amount = document.getElementById('amount').value;
-            const to = document.getElementById('to').value;
-            const type = document.getElementById('type').value;
-
-            fetch('/createTransaction', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount, approval: to, type })
-            })
-                .then(response => response.json())
-                .then(data => alert(data.message))
-                .catch(error => console.error('Error:', error));
-        }
-
         function approveTransaction(transactionId, button) {
-            fetch('/approveTransaction', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ transaction_id: transactionId })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    // Remove the approved transaction from the UI
-                    button.closest('tr').remove();
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
+    fetch('/approveTransaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transaction_id: transactionId }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            // Remove the transaction row from the table
+            button.closest('tr').remove();
+        })
+        .catch(error => console.error('Error approving transaction:', error));
+}
         document.addEventListener('DOMContentLoaded', () => {
-            fetchUsers();
+            loadUsers();
             fetchApprovalTransactions();
         });
     </script>
-</head>
-<body>
-    <div class="side-panel">
-        <h3>Transaction Manager</h3>
-        <a href="#" class="active" onclick="document.getElementById('createTransaction').style.display = 'block'; document.getElementById('approveTransaction').style.display = 'none';">Create Transaction</a>
-        <a href="#" onclick="document.getElementById('createTransaction').style.display = 'none'; document.getElementById('approveTransaction').style.display = 'block';">Approve Transaction</a>
-    </div>
-
-    <div class="main-content">
-        <div id="createTransaction">
-            <h4>Create Transaction</h4>
-            <form>
-                <div class="mb-3">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" id="amount" required>
-                </div>
-                <div class="mb-3">
-                    <label for="to" class="form-label">To</label>
-                    <select class="form-select" id="to" required></select>
-                </div>
-                <div class="mb-3">
-                    <label for="type" class="form-label">Type</label>
-                    <select class="form-select" id="type" required>
-                        <option value="debit">Debit</option>
-                        <option value="credit">Credit</option>
-                    </select>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="createTransaction()">Create Transaction</button>
-            </form>
-        </div>
-
-        <div id="approveTransaction" style="display:none;">
-            <h4>Approve Transactions</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Transaction ID</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                        <th>Date</th>
-                        <th>From</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="approval-transactions"></tbody>
-            </table>
-        </div>
-    </div>
 </body>
 </html>

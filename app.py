@@ -10,142 +10,96 @@ import uuid
 from datetime import datetime
 
 # Initialize the Flask app
-app = Flask(__name__)
+app = Flask(__name__,static_folder="assets")
 app.secret_key = "secret_key"
 # Load the trained model (ensure the model file path is correct)
 cred = credentials.Certificate("firebase_credentials.json")
 fa.initialize_app(cred)
 db = firestore.client()
+pending_transactions = {}
+def expire_transaction(tran_id):
+    if tran_id in pending_transactions:
+        del pending_transactions[tran_id]
+
 print(db)
 try:
     model = joblib.load('model.pkl')
 except FileNotFoundError:
     raise FileNotFoundError("The model file 'model.pkl' was not found. Ensure it exists in the correct path.")
-pending_transactions = {}
 
-# Function to remove expired transactions
-def expire_transaction(tran_id):
-    if tran_id in pending_transactions:
-        del pending_transactions[tran_id]
 @app.route("/")
 def home():
     return render_template("index.html")
-
-# @app.route('/dashbaord')
-# def dashbaord():
-#     return render_template("dashbaord.html")
-# Login Route
-@app.route('/login')
-
-# Signup Route@app.route('/login')
-def login():
-    print("Login page accessed")
-    return render_template("login.html")
-print(pending_transactions)
-# Signup Route
-@app.route('/signup')
-def signup():
-    return render_template("signup.html")
-@app.route('/transactions')
-def transactions():
-    return render_template("transaction.html")
-
-
-@app.route('/getUsers', methods=['GET'])
-def get_users():
-    try:
-        users = []
-        docs = db.collection('users').stream()
-        for doc in docs:
-            user = doc.to_dict()
-            if user['userId'] != session['uid']:
-                users.append({
-                    'user_id': user['userId'],
-                    'fullname': user['fullName'],
-                    'username': user['username'],
-                })
-        return jsonify(users), 200
-    except Exception as e:
-        return jsonify({'message': 'Error fetching users', 'error': str(e)}), 500
-
 @app.route('/getApprovalTransactions', methods=['GET'])
 def get_approval_transactions():
     try:
         user_id = session['uid']
         transactions = []
-        docs = db.collection('transactions').where('approval', '==', user_id).stream()
-        
+
+        # Fetch only pending transactions for the logged-in user
+        docs = (
+            db.collection('pending_transactions')
+            .where('approval', '==', user_id)
+            .where('status', '==', 'pending')
+            .stream()
+        )
+
         for doc in docs:
             transaction = doc.to_dict()
             from_user_id = transaction['from_user']
-            
+
             # Fetch full name of the 'from_user' (transaction initiator)
             user_doc = db.collection('users').document(from_user_id).get()
             if user_doc.exists:
                 user = user_doc.to_dict()
                 transaction['from_user_name'] = user['fullName']
+            else:
+                transaction['from_user_name'] = 'Unknown'
+
             transactions.append(transaction)
-        
+
         return jsonify(transactions), 200
     except Exception as e:
         return jsonify({'message': 'Error fetching transactions', 'error': str(e)}), 500
+# @app.route('/dashbaord')
+# def dashbaord():
+#     return render_template("dashbaord.html")
+# Login Route
+@app.route('/login')
+def login():
+    print("Login page accessed")
+    return render_template("login.html")
 
-@app.route('/createTransaction', methods=['POST'])
-def create_transaction():
+@app.route('/creditProfiling')
+def creditProfiling():
     try:
-        data = request.json
-        transaction_ref = db.collection('transactions').document()
-        user_id = session['uid']
-        approval = data['approval']
-        transaction_type = data['type']
-        payee = approval if transaction_type == 'debit' else user_id
-        payer = user_id if transaction_type == 'debit' else approval
+        userId=session['uid']
+        print(f"Dashboard route accessed for userId: {userId}")
 
-        transaction_ref.set({
-            'transaction_id': transaction_ref.id,
-            'from_user': user_id,
-            'approval': approval,
-            'amount': data['amount'],
-            'type': transaction_type,
-            'payee': payee,
-            'payer': payer,
-            'created_at': datetime.utcnow(),
-            'status': 'pending'
-        })
-        return jsonify({'message': 'Transaction created successfully!', 'transaction_id': transaction_ref.id}), 200
+        # Fetch the user document snapshot
+        user_snapshot = db.collection("users").document(userId).get()
+
+        # Check if the document exists
+        if not user_snapshot.exists:
+            print(f"No user found with userId: {userId}")
+            return render_template("credit_profiling.html", error="User not found")
+
+        # Convert the document snapshot to a dictionary
+        user_data = user_snapshot.to_dict()
+        print(f"Fetched user data: {user_data}")
+
+        # Render the credit profiling page with user data
+        return render_template("creditProfiling.html", user=user_data)
     except Exception as e:
-        return jsonify({'message': 'Error creating transaction', 'error': str(e)}), 500
+        print(f"Error loading dashboard: {e}")
+        return render_template("creditProfiling.html", error=f"An error occurred: {e}")
 
-@app.route('/approveTransaction', methods=['POST'])
-def approve_transaction():
-    try:
-        data = request.json
-        transaction_id = data['transaction_id']
-        user_id = session['uid']
-        transaction_ref = db.collection('transactions').document(transaction_id)
-        transaction = transaction_ref.get()
 
-        if not transaction.exists:
-            return jsonify({'message': 'Transaction not found'}), 404
 
-        transaction_data = transaction.to_dict()
-        if transaction_data['approval'] != user_id:
-            return jsonify({'message': 'Unauthorized approval attempt'}), 403
-
-        # Move transaction to 'approved_transactions' collection
-        db.collection('approved_transactions').document(transaction_id).set({
-            **transaction_data,
-            'approved_at': datetime.utcnow(),
-            'status': 'approved'
-        })
-
-        # Update status in the 'transactions' collection to 'approved'
-        transaction_ref.update({'status': 'approved'})
-        
-        return jsonify({'message': 'Transaction approved successfully!'}), 200
-    except Exception as e:
-        return jsonify({'message': 'Error approving transaction', 'error': str(e)}), 500
-
+# Signup Route
+@app.route('/signup')
+def signup():
+    return render_template("signup.html")
 
 # Register Route
 @app.route("/register", methods=["POST"])
@@ -161,7 +115,8 @@ def register():
         email = data.get("email")
         password = data.get("password")
         phone = data.get("phone")
-        fullname=data.get("fullname")
+        age=data.get("age")
+        fullName=data.get('fullName')
         # Create Firebase Authentication user
         try:
             user = auth.create_user(
@@ -176,18 +131,18 @@ def register():
         # Save additional user details to Firestore
         db.collection("users").document(user.uid).set({
             "userId": user.uid,
-            "fullName":fullname,
             "username": username,
             "email": email,
             "phone": phone,
             "currentBalance": 0,
-            "score": 0,
-            "totalBorrowed": 0,
+            "totalTransaction": 0,
+            'age':age,
             "totalLend":0,
-            "totalTransaction":0,
+            "score": 0,
+            'fullName': fullName,
             "createdAt": firestore.SERVER_TIMESTAMP
         })
-        print(user.uid)
+        #print(user.uid)
         print(f"User {user.uid} registered successfully")
         session['uid']=user.uid
         return jsonify({"message": "User registered successfully!", "userId": user.uid}), 200
@@ -196,6 +151,7 @@ def register():
         return jsonify({"message": str(e)}), 500
 
 # Dashboard Route
+
 @app.route("/dashboard/<userId>")
 def dashboard(userId):
     """Render the dashboard for the specific user based on userId."""
@@ -247,7 +203,162 @@ def set_session():
         return jsonify({"message": "Session set successfully!"}), 200
     return jsonify({"error": "UID not provided"}), 400
 
-# Logout Route
+@app.route('/transactions')
+def transactions():
+    return render_template("transaction.html", user=session['uid'])
+@app.route('/getUsers', methods=['GET'])
+def get_users():
+    try:
+        users = []
+        docs = db.collection('users').stream()
+        for doc in docs:
+            user = doc.to_dict()
+            if user['userId'] != session['uid']:  # Exclude logged-in user
+                users.append({
+                    'user_id': user['userId'],
+                    'fullname': user['fullName'],
+                    'username': user['username'],
+                })
+        return jsonify(users), 200
+    except Exception as e:
+        return jsonify({'message': 'Error fetching users', 'error': str(e)}), 500
+
+# Create a new transaction (store in pending_transactions)
+@app.route('/createTransaction', methods=['POST'])
+def create_transaction():
+    try:
+        data = request.json
+        transaction_ref = db.collection('pending_transactions').document()
+        transaction_ref.set({
+            'transaction_id': transaction_ref.id,
+            'from_user': session['uid'],
+            'approval': data['approval'],
+            'amount': data['amount'],
+            'type': data['type'],
+            'created_at': datetime.utcnow(),
+            'status': 'pending',
+        })
+        return jsonify({'message': 'Transaction stored in pending_transactions!', 'transaction_id': transaction_ref.id}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error creating transaction', 'error': str(e)}), 500
+
+# Approve a transaction
+@app.route('/approveTransaction', methods=['POST'])
+def approve_transaction():
+    try:
+        data = request.json
+        transaction_id = data['transaction_id']
+        user_id = session['uid']
+        #print(user_id)
+        # Fetch the transaction from pending_transactions
+        transaction_ref = db.collection('pending_transactions').document(transaction_id)
+        transaction = transaction_ref.get()
+       
+      
+        transaction_data = transaction.to_dict()
+        
+        
+        # Ensure only the designated approver can approve
+        if transaction_data['approval'] != user_id:
+            return jsonify({'message': 'Unauthorized approval attempt'}), 403
+        print(transaction_data)
+        # Determine payer and payee based on transaction type
+        if transaction_data['type'] == 'Lend':
+            payer_ref = db.collection('users').document(transaction_data['from_user'])
+            payee_ref = db.collection('users').document(transaction_data['approval'])
+        elif transaction_data['type'] == 'Borrow':
+            payer_ref = db.collection('users').document(transaction_data['approval'])
+            payee_ref = db.collection('users').document(transaction_data['from_user'])
+        else:
+            return jsonify({'message': 'Invalid transaction type'}), 400
+
+        # Fetch and validate payer and payee documents
+        payer_doc = payer_ref.get()
+        payee_doc = payee_ref.get()
+      
+
+        payer_data = payer_doc.to_dict()
+        payee_data = payee_doc.to_dict()
+        
+        # Update the payer's and payee's balances and stats
+        if transaction_data['type'] == 'Borrow':
+            updated_payer_data = {
+                'currentBalance': int(payer_data['currentBalance']) - int(transaction_data['amount']),
+                'totalTransaction': int(payer_data['totalTransaction']) + 1,
+                'totalLend': int(payer_data['totalLend']) + int(transaction_data['amount']),
+            }
+            updated_payee_data = {
+                'currentBalance': int(payee_data['currentBalance']) + int(transaction_data['amount']),
+                'totalTransaction': int(payee_data['totalTransaction']) + 1,
+                'totalBorrowed': int(payee_data['totalBorrowed']) + int(transaction_data['amount']),
+            }
+        elif transaction_data['type'] == 'Lend':
+            updated_payer_data = {
+                'currentBalance': int(payer_data['currentBalance']) - int(transaction_data['amount']),
+                'totalTransaction': int(payer_data['totalTransaction']) + 1,
+                'totalBorrowed': int(payer_data['totalBorrowed']) + int(transaction_data['amount']),
+            }
+            updated_payee_data = {
+                'currentBalance': int(payee_data['currentBalance']) + int(transaction_data['amount']),
+                'totalTransaction': int(payee_data['totalTransaction']) + 1,
+                'totalLend': int(payee_data['totalLend']) + int(transaction_data['amount']),
+            }
+
+        # Apply updates
+        payer_ref.update(updated_payer_data)
+        payee_ref.update(updated_payee_data)
+        print(payer_ref)
+        # Move transaction to approved_transactions
+        db.collection('approved_transactions').document(transaction_id).set({
+            **transaction_data,
+            'approved_at': datetime.utcnow(),
+            'status': 'approved',
+             'payer': payer_data.get('userId'),
+            'payee': payee_data.get('userId'),
+        })
+
+        # Remove transaction from pending_transactions
+        transaction_ref.delete()
+
+        return jsonify({'message': 'Transaction approved and moved to approved_transactions collection!'}), 200
+
+    except Exception as e:
+        print(str(e))
+        return jsonify({'message': 'Error approving transaction', 'error': str(e)}), 500
+
+# Ledger route
+@app.route('/ledger', methods=['GET'])
+def ledger():
+    try:
+        user_id = session['uid']
+        approved_transactions = db.collection('approved_transactions').stream()
+        print(approved_transactions)
+        ledger_entries = []
+        for doc in approved_transactions:
+            transaction = doc.to_dict()
+            print(transaction)
+            #print(transaction)
+            if transaction['payer'] == user_id or transaction['payee'] == user_id:
+                # Fetch payer and payee names
+                payer = db.collection('users').document(transaction['payer']).get().to_dict()
+                payee = db.collection('users').document(transaction['payee']).get().to_dict()
+
+                ledger_entries.append({
+                    'amount': transaction['amount'],
+                    'type': transaction['type'],
+                    'date': transaction['approved_at'],
+                    'from_user': f"{payer['fullName']} ({payer['username']})",
+                    'to_user': f"{payee['fullName']} ({payee['username']})"
+                })
+        print(ledger_entries)
+        return jsonify(ledger_entries), 200
+    except Exception as e:
+        return jsonify({'message': 'Error fetching ledger data', 'error': str(e)}), 500
+
+@app.route('/ledgerPage')
+def ledgerPage():
+    return render_template('ledger.html')
+
 @app.route("/logout")
 def logout():
     """Log the user out."""
@@ -317,8 +428,9 @@ def reset_balances():
 def predict():
     try:
         # Get the data from the request (JSON format)
-        data = request.get_json(force=True)
         
+        data = request.get_json(force=True)
+        print(data)
         # Ensure all required fields are present in the input
         required_fields = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7']
         if not all(field in data for field in required_fields):

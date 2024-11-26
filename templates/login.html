@@ -414,7 +414,497 @@
 <!-- Your Custom Script -->
 
 
-    <script type="module" src="/static/test.js" ></script>
+    <script type="module" src="{{ url_for('static', filename='/static/test.js') }}" ></script>
+                        <label for="credentials_identity">Email address</label>
+                        <div class="input mb-4">
+                            <input autocapitalize="off" type="email" name="credentials[identity]" id="credentials_identity" />
+                        </div>
+                        <label for="credentials_password">Password</label>
+                        <div class="input mb-4">
+                            <input type="password" name="credentials[password]" id="credentials_password" />
+                        </div>
+                        <script src="https://www.recaptcha.net/recaptcha/api.js" async defer></script>
+                        <div data-sitekey="6LfvQ08UAAAAAH9IfiZJbFbmV5J9Q8yNTpHWxyVR" class="g-recaptcha "></div>
+                        <noscript>
+            <div>
+              <div style="width: 302px; height: 422px; position: relative;">
+                <div style="width: 302px; height: 422px; position: absolute;">
+                  <iframe
+                    src="https://www.recaptcha.net/recaptcha/api/fallback?k=6LfvQ08UAAAAAH9IfiZJbFbmV5J9Q8yNTpHWxyVR"
+                    name="ReCAPTCHA"
+                    style="width: 302px; height: 422px; border-style: none; border: 0; overflow: hidden;">
+                  </iframe>
+                </div>
+              </div>
+              <div style="width: 300px; height: 60px; border-style: none;
+                bottom: 12px; left: 25px; margin: 0px; padding: 0px; right: 25px;
+                background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;">
+                <textarea id="g-recaptcha-response" name="g-recaptcha-response"
+                  class="g-recaptcha-response"
+                  style="width: 250px; height: 40px; border: 1px solid #c1c1c1;
+                  margin: 10px 25px; padding: 0px; resize: none;">
+                </textarea>
+              </div>
+            </div>
+          </noscript>
+
+
+                        <div>
+                            <input value="80a1e767-1c06-47af-b972-f6240934ad9a" autocomplete="off" type="hidden" name="sequence[token]" id="sequence_token" />
+                        </div>
+                        <div class="py-4">
+                            <button type="submit" name="commit"  class="cta-button block font-mont rounded bg-teal-darker text-white shadow px-4 py-2 text-center w-full" data-disable-with="Log in">
+                            Login </button>
+                        </div>
+                    </form>
+                    <a class="block text-center font-mont font-semibold text-teal-darker py-2" href="/password_reset">Forgot your password?</a>
+
+                    <div class="mt-6 text-grey-lightest font-mont font-semibold text-center">
+                        <hr class="inline-block">
+                        <div class="inline-block px-2">or</div>
+                        <hr class="inline-block">
+                    </div>
+
+                    <div class="pt-4 pb-6">
+                        <form class="button_to" method="post" action="/auth/google_oauth2?redirect_uri=https%3A%2F%2Fsecure.splitwise.com%2Fauth%2Fv4%2Fcallback"><button class="block cta-button font-mont rounded bg-white border border-grey-lightest shadow px-4 py-2 text-center w-full" type="submit">
+            <img class="inline-block mr-2 h-6 w-6" src="https://assets.splitwise.com/assets/fat_rabbit/signup/google-2017-a5b76a1c1eebd99689b571954b1ed40e13338b8a08d6649ffc5ca2ea1bfcb953.png" />
+            Sign in with Google
+</button><input type="hidden" name="authenticity_token" value="AmhjeFejCVQeXIda59-YNtpx7-9HSGYvDQCxtQ9XSTbEiY5BMZNqBNopNVClQeT9cb4aU5ZevvkQcrN99m0axw" autocomplete="off" /></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+
+  
+
+
+        <div class="container mx-auto">
+        <!-- Include the footer -->
+        {% include 'footer.html' %}
+    </div>
+</body>
+
+</html>
+<!doctype html>
+<html lang="en" class="">
+
+<head>
+    <!-- <script>
+        var _rollbarConfig = {
+            "accessToken": "e6f02c3ea02843769f37758afcce81ae",
+            "captureUncaught": true,
+            "captureUnhandledRejections": true,
+            "payload": {
+                "environment": "production",
+                "person": {
+                    "id": null,
+                    "username": null,
+                    "email": null
+                }
+            },
+            "ignoredMessages": ["\\$ is not defined", "Backbone is not defined", "Failed to resolve module specifier \"(application|motel)\"\\. Relative references must start with", "Error resolving module specifier “(application|motel)”\\. Relative module specifiers must start with", "Error resolving module specifier: (application|motel)"],
+            "hostWhiteList": ["splitwise.com", "cloudfront.net"]
+        };
+        // Rollbar Snippet
+        ! function(r) {
+            var e = {};
+
+            function o(n) {
+                if (e[n]) return e[n].exports;
+                var t = e[n] = {
+                    i: n,
+                    l: !1,
+                    exports: {}
+                };
+                return r[n].call(t.exports, t, t.exports, o), t.l = !0, t.exports
+            }
+            o.m = r, o.c = e, o.d = function(r, e, n) {
+                o.o(r, e) || Object.defineProperty(r, e, {
+                    enumerable: !0,
+                    get: n
+                })
+            }, o.r = function(r) {
+                "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(r, Symbol.toStringTag, {
+                    value: "Module"
+                }), Object.defineProperty(r, "__esModule", {
+                    value: !0
+                })
+            }, o.t = function(r, e) {
+                if (1 & e && (r = o(r)), 8 & e) return r;
+                if (4 & e && "object" == typeof r && r && r.__esModule) return r;
+                var n = Object.create(null);
+                if (o.r(n), Object.defineProperty(n, "default", {
+                        enumerable: !0,
+                        value: r
+                    }), 2 & e && "string" != typeof r)
+                    for (var t in r) o.d(n, t, function(e) {
+                        return r[e]
+                    }.bind(null, t));
+                return n
+            }, o.n = function(r) {
+                var e = r && r.__esModule ? function() {
+                    return r.default
+                } : function() {
+                    return r
+                };
+                return o.d(e, "a", e), e
+            }, o.o = function(r, e) {
+                return Object.prototype.hasOwnProperty.call(r, e)
+            }, o.p = "", o(o.s = 0)
+        }([function(r, e, o) {
+            "use strict";
+            var n = o(1),
+                t = o(5);
+            _rollbarConfig = _rollbarConfig || {}, _rollbarConfig.rollbarJsUrl = _rollbarConfig.rollbarJsUrl || "https://cdn.rollbar.com/rollbarjs/refs/tags/v2.26.2/rollbar.min.js", _rollbarConfig.async = void 0 === _rollbarConfig.async || _rollbarConfig.async;
+            var a = n.setupShim(window, _rollbarConfig),
+                l = t(_rollbarConfig);
+            window.rollbar = n.Rollbar, a.loadFull(window, document, !_rollbarConfig.async, _rollbarConfig, l)
+        }, function(r, e, o) {
+            "use strict";
+            var n = o(2),
+                t = o(3);
+
+            function a(r) {
+                return function() {
+                    try {
+                        return r.apply(this, arguments)
+                    } catch (r) {
+                        try {
+                            console.error("[Rollbar]: Internal error", r)
+                        } catch (r) {}
+                    }
+                }
+            }
+            var l = 0;
+
+            function i(r, e) {
+                this.options = r, this._rollbarOldOnError = null;
+                var o = l++;
+                this.shimId = function() {
+                    return o
+                }, "undefined" != typeof window && window._rollbarShims && (window._rollbarShims[o] = {
+                    handler: e,
+                    messages: []
+                })
+            }
+            var s = o(4),
+                d = function(r, e) {
+                    return new i(r, e)
+                },
+                c = function(r) {
+                    return new s(d, r)
+                };
+
+            function u(r) {
+                return a((function() {
+                    var e = this,
+                        o = Array.prototype.slice.call(arguments, 0),
+                        n = {
+                            shim: e,
+                            method: r,
+                            args: o,
+                            ts: new Date
+                        };
+                    window._rollbarShims[this.shimId()].messages.push(n)
+                }))
+            }
+            i.prototype.loadFull = function(r, e, o, n, t) {
+                var l = !1,
+                    i = e.createElement("script"),
+                    s = e.getElementsByTagName("script")[0],
+                    d = s.parentNode;
+                i.crossOrigin = "", i.src = n.rollbarJsUrl, o || (i.async = !0), i.onload = i.onreadystatechange = a((function() {
+                    if (!(l || this.readyState && "loaded" !== this.readyState && "complete" !== this.readyState)) {
+                        i.onload = i.onreadystatechange = null;
+                        try {
+                            d.removeChild(i)
+                        } catch (r) {}
+                        l = !0,
+                            function() {
+                                var e;
+                                if (void 0 === r._rollbarDidLoad) {
+                                    e = new Error("rollbar.js did not load");
+                                    for (var o, n, a, l, i = 0; o = r._rollbarShims[i++];)
+                                        for (o = o.messages || []; n = o.shift();)
+                                            for (a = n.args || [], i = 0; i < a.length; ++i)
+                                                if ("function" == typeof(l = a[i])) {
+                                                    l(e);
+                                                    break
+                                                }
+                                }
+                                "function" == typeof t && t(e)
+                            }()
+                    }
+                })), d.insertBefore(i, s)
+            }, i.prototype.wrap = function(r, e, o) {
+                try {
+                    var n;
+                    if (n = "function" == typeof e ? e : function() {
+                            return e || {}
+                        }, "function" != typeof r) return r;
+                    if (r._isWrap) return r;
+                    if (!r._rollbar_wrapped && (r._rollbar_wrapped = function() {
+                            o && "function" == typeof o && o.apply(this, arguments);
+                            try {
+                                return r.apply(this, arguments)
+                            } catch (o) {
+                                var e = o;
+                                throw e && ("string" == typeof e && (e = new String(e)), e._rollbarContext = n() || {}, e._rollbarContext._wrappedSource = r.toString(), window._rollbarWrappedError = e), e
+                            }
+                        }, r._rollbar_wrapped._isWrap = !0, r.hasOwnProperty))
+                        for (var t in r) r.hasOwnProperty(t) && (r._rollbar_wrapped[t] = r[t]);
+                    return r._rollbar_wrapped
+                } catch (e) {
+                    return r
+                }
+            };
+            for (var p = "log,debug,info,warn,warning,error,critical,global,configure,handleUncaughtException,handleAnonymousErrors,handleUnhandledRejection,captureEvent,captureDomContentLoaded,captureLoad".split(","), f = 0; f < p.length; ++f) i.prototype[p[f]] = u(p[f]);
+            r.exports = {
+                setupShim: function(r, e) {
+                    if (r) {
+                        var o = e.globalAlias || "Rollbar";
+                        if ("object" == typeof r[o]) return r[o];
+                        r._rollbarShims = {}, r._rollbarWrappedError = null;
+                        var l = new c(e);
+                        return a((function() {
+                            e.captureUncaught && (l._rollbarOldOnError = r.onerror, n.captureUncaughtExceptions(r, l, !0), e.wrapGlobalEventHandlers && t(r, l, !0)), e.captureUnhandledRejections && n.captureUnhandledRejections(r, l, !0);
+                            var a = e.autoInstrument;
+                            return !1 !== e.enabled && (void 0 === a || !0 === a || function(r) {
+                                return !("object" != typeof r || void 0 !== r.page && !r.page)
+                            }(a)) && r.addEventListener && (r.addEventListener("load", l.captureLoad.bind(l)), r.addEventListener("DOMContentLoaded", l.captureDomContentLoaded.bind(l))), r[o] = l, l
+                        }))()
+                    }
+                },
+                Rollbar: c
+            }
+        }, function(r, e, o) {
+            "use strict";
+
+            function n(r, e, o, n) {
+                r._rollbarWrappedError && (n[4] || (n[4] = r._rollbarWrappedError), n[5] || (n[5] = r._rollbarWrappedError._rollbarContext), r._rollbarWrappedError = null);
+                var t = e.handleUncaughtException.apply(e, n);
+                o && o.apply(r, n), "anonymous" === t && (e.anonymousErrorsPending += 1)
+            }
+            r.exports = {
+                captureUncaughtExceptions: function(r, e, o) {
+                    if (r) {
+                        var t;
+                        if ("function" == typeof e._rollbarOldOnError) t = e._rollbarOldOnError;
+                        else if (r.onerror) {
+                            for (t = r.onerror; t._rollbarOldOnError;) t = t._rollbarOldOnError;
+                            e._rollbarOldOnError = t
+                        }
+                        e.handleAnonymousErrors();
+                        var a = function() {
+                            var o = Array.prototype.slice.call(arguments, 0);
+                            n(r, e, t, o)
+                        };
+                        o && (a._rollbarOldOnError = t), r.onerror = a
+                    }
+                },
+                captureUnhandledRejections: function(r, e, o) {
+                    if (r) {
+                        "function" == typeof r._rollbarURH && r._rollbarURH.belongsToShim && r.removeEventListener("unhandledrejection", r._rollbarURH);
+                        var n = function(r) {
+                            var o, n, t;
+                            try {
+                                o = r.reason
+                            } catch (r) {
+                                o = void 0
+                            }
+                            try {
+                                n = r.promise
+                            } catch (r) {
+                                n = "[unhandledrejection] error getting `promise` from event"
+                            }
+                            try {
+                                t = r.detail, !o && t && (o = t.reason, n = t.promise)
+                            } catch (r) {}
+                            o || (o = "[unhandledrejection] error getting `reason` from event"), e && e.handleUnhandledRejection && e.handleUnhandledRejection(o, n)
+                        };
+                        n.belongsToShim = o, r._rollbarURH = n, r.addEventListener("unhandledrejection", n)
+                    }
+                }
+            }
+        }, function(r, e, o) {
+            "use strict";
+
+            function n(r, e, o) {
+                if (e.hasOwnProperty && e.hasOwnProperty("addEventListener")) {
+                    for (var n = e.addEventListener; n._rollbarOldAdd && n.belongsToShim;) n = n._rollbarOldAdd;
+                    var t = function(e, o, t) {
+                        n.call(this, e, r.wrap(o), t)
+                    };
+                    t._rollbarOldAdd = n, t.belongsToShim = o, e.addEventListener = t;
+                    for (var a = e.removeEventListener; a._rollbarOldRemove && a.belongsToShim;) a = a._rollbarOldRemove;
+                    var l = function(r, e, o) {
+                        a.call(this, r, e && e._rollbar_wrapped || e, o)
+                    };
+                    l._rollbarOldRemove = a, l.belongsToShim = o, e.removeEventListener = l
+                }
+            }
+            r.exports = function(r, e, o) {
+                if (r) {
+                    var t, a, l = "EventTarget,Window,Node,ApplicationCache,AudioTrackList,ChannelMergerNode,CryptoOperation,EventSource,FileReader,HTMLUnknownElement,IDBDatabase,IDBRequest,IDBTransaction,KeyOperation,MediaController,MessagePort,ModalWindow,Notification,SVGElementInstance,Screen,TextTrack,TextTrackCue,TextTrackList,WebSocket,WebSocketWorker,Worker,XMLHttpRequest,XMLHttpRequestEventTarget,XMLHttpRequestUpload".split(",");
+                    for (t = 0; t < l.length; ++t) r[a = l[t]] && r[a].prototype && n(e, r[a].prototype, o)
+                }
+            }
+        }, function(r, e, o) {
+            "use strict";
+
+            function n(r, e) {
+                this.impl = r(e, this), this.options = e,
+                    function(r) {
+                        for (var e = function(r) {
+                                return function() {
+                                    var e = Array.prototype.slice.call(arguments, 0);
+                                    if (this.impl[r]) return this.impl[r].apply(this.impl, e)
+                                }
+                            }, o = "log,debug,info,warn,warning,error,critical,global,configure,handleUncaughtException,handleAnonymousErrors,handleUnhandledRejection,_createItem,wrap,loadFull,shimId,captureEvent,captureDomContentLoaded,captureLoad".split(","), n = 0; n < o.length; n++) r[o[n]] = e(o[n])
+                    }(n.prototype)
+            }
+            n.prototype._swapAndProcessMessages = function(r, e) {
+                var o, n, t;
+                for (this.impl = r(this.options); o = e.shift();) n = o.method, t = o.args, this[n] && "function" == typeof this[n] && ("captureDomContentLoaded" === n || "captureLoad" === n ? this[n].apply(this, [t[0], o.ts]) : this[n].apply(this, t));
+                return this
+            }, r.exports = n
+        }, function(r, e, o) {
+            "use strict";
+            r.exports = function(r) {
+                return function(e) {
+                    if (!e && !window._rollbarInitialized) {
+                        for (var o, n, t = (r = r || {}).globalAlias || "Rollbar", a = window.rollbar, l = function(r) {
+                                return new a(r)
+                            }, i = 0; o = window._rollbarShims[i++];) n || (n = o.handler), o.handler._swapAndProcessMessages(l, o.messages);
+                        window[t] = n, window._rollbarInitialized = !0
+                    }
+                }
+            }
+        }]);
+        // End Rollbar Snippet
+    </script> -->
+
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-22826239-1"></script> -->
+
+    <!-- <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-22826239-1');
+    </script> -->
+
+
+
+    <meta charset="utf-8">
+    <meta name="referrer" content="origin">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="apple-itunes-app" content="app-id=458023433, app-argument=splitwise://open">
+    <meta name="description" content="Splitwise is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!">
+    <meta name="color-scheme" content="light only">
+
+    <meta property="og:description" content="Splitwise is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!">
+    <meta property="og:title" content="Log in">
+    <meta property="og:image" content="https://assets.splitwise.com/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png">
+    <meta property="og:image:secure_url" content="https://assets.splitwise.com/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png">
+    <meta property="og:image:alt" content="Splitwise logo">
+    <meta property="og:site_name" content="Splitwise">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://secure.splitwise.com/login">
+    <meta property="fb:app_id" content="293864780643203">
+    <meta property="og:locale" content="en">
+    <meta property="og:locale:alternate" content="de">
+    <meta property="og:locale:alternate" content="es">
+    <meta property="og:locale:alternate" content="fr">
+    <meta property="og:locale:alternate" content="id">
+    <meta property="og:locale:alternate" content="it">
+    <meta property="og:locale:alternate" content="ja">
+    <meta property="og:locale:alternate" content="nl">
+    <meta property="og:locale:alternate" content="pt-BR">
+    <meta property="og:locale:alternate" content="pt-PT">
+    <meta property="og:locale:alternate" content="sv">
+    <meta property="og:locale:alternate" content="th">
+    <meta property="og:locale:alternate" content="emoji">
+
+    <meta name="twitter:card" content="app">
+    <meta name="twitter:description" content="Splitwise is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!">
+    <meta name="twitter:site" content="@splitwise">
+    <meta name="twitter:app:name:iphone" content="Splitwise">
+    <meta name="twitter:app:id:iphone" content="458023433">
+    <meta name="twitter:app:name:googleplay" content="Splitwise">
+    <meta name="twitter:app:id:googleplay" content="com.Splitwise.SplitwiseMobile">
+
+
+    <meta name="csrf-param" content="authenticity_token" />
+    <meta name="csrf-token" content="Pejp1c-ddlc7xQ_gwYW0mwT62AwZKppr1xvsldRS7tXgk_zdMzCG1x1ou7ECKrzY-sVFqwu-6Wy4AL7aSv9J1Q" />
+
+    <link rel="stylesheet" href="https://assets.splitwise.com/assets/motel-82ff5aea486b5a67c66619aefa9df389a82561c946813551bfee5ed0175bf3a8.css" media="all" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700|Montserrat:400,600,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-precomposed.png">
+
+    <link rel="canonical" href="https://www.splitwise.com/login">
+
+    <title>Log in :: Splitwise</title>
+
+    <script type="importmap" data-turbo-track="reload">{ "imports": { "application": "https://assets.splitwise.com/assets/application-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.js", "motel": "https://assets.splitwise.com/assets/motel-9680a85d72b6e12cc54519efa8506651b42f5a043ce30bc3c73bf48ba8af53a7.js",
+        "motel/motel": "https://assets.splitwise.com/assets/motel/motel-c75db22451adcb1f5d0420f4cad79acafbb541772a3771da2be4cca996d1fd6d.js", "charts": "https://assets.splitwise.com/assets/charts-1f38e9276acc590cf23ffc67fb3514a8af03f73a7a02a68981883c97934a1d9f.js",
+        "chartkick": "https://assets.splitwise.com/assets/chartkick-338375253bd80b2f0da7e8b98ae0194bb84ea647cae7d3a2fec94a8cc15f7578.js", "Chart.bundle": "https://assets.splitwise.com/assets/Chart.bundle-93c2270a882e090c5eaceec7a74e8cc7c4e02f7dde0951148b83f9a0be5c8dbb.js",
+        "@rails/ujs": "https://assets.splitwise.com/assets/@rails--ujs-57169a955c1531a628bf30afac33de3edd70cec551c6262363e9915d750c3f6d.js", "@github/webauthn-json/browser-ponyfill": "https://assets.splitwise.com/assets/@github--webauthn-json--browser-ponyfill-c940892aa19f632b24b0ce6709282eceeed185222b9fda7902b0ec9bd72ce954.js"
+        } }
+    </script>
+
+    <script src="https://assets.splitwise.com/assets/es-module-shims.min-f6e61a1a9f41be4f7947efa52fef6f0b9b265d4a397ce46d39a09e1c1d044578.js" async="async" data-turbo-track="reload"></script>
+    <script type="module">import "application"</script>
+    <script type="module">import "motel"</script>
+
+
+</head>
+
+<body class="font-sans subpixel-antialiased  login" id="">
+    <div class="container mx-auto">
+        <div class="container mx-auto">
+        <!-- Include the header -->
+        {% include 'header.html' %}
+    </div>
+
+    </div>
+  
+
+    <main class="bg-facets">
+        <div class="container mx-auto px-4 md:px-8 pt-8">
+            <div class="lg:flex align-center justify-center items-center">
+                <div class="lg:w-1/2 xl:w-1/2 modal_box px-4 md:px-16">
+                    <div class="text-3xl font-mont mb-4">
+                        Log in
+                    </div>
+                    <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+
+                    <form id="login-form"  method="POST">
+                        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+
+<!-- Your Custom Script -->
+
+
+    <script type="module" src="{{ url_for('static', filename='/static/test.js') }}" ></script>
                         <label for="credentials_identity">Email address</label>
                         <div class="input mb-4">
                             <input autocapitalize="off" type="email" name="credentials[identity]" id="credentials_identity" />
