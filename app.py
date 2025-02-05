@@ -24,21 +24,22 @@ def expire_transaction(tran_id):
 
 user_id=None
 
-try:
-    model = joblib.load('model.pkl')
-except FileNotFoundError:
-    raise FileNotFoundError("The model file 'model.pkl' was not found. Ensure it exists in the correct path.")
+# try:
+#     model = joblib.load('model.pkl')
+# except FileNotFoundError:
+#     raise FileNotFoundError("The model file 'model.pkl' was not found. Ensure it exists in the correct path.")
 
 @app.route("/")
 def home():
-    user_id = session['uid']
-    if user_id:
-        return redirect("/dashboard/"+user_id)
+    user_id = session.get('uid')  # Safely get 'uid' from session
+    if user_id:  # Check if user_id exists
+        return redirect(f"/dashboard/{user_id}")
     return render_template("index.html")
+
 @app.route('/getApprovalTransactions', methods=['GET'])
 def get_approval_transactions():
     try:
-        user_id = session['uid']
+        user_id = session.get('uid')
         transactions = []
 
         # Fetch only pending transactions for the logged-in user
@@ -74,10 +75,11 @@ def get_approval_transactions():
 # Login Route
 @app.route('/login')
 def login():
-    user_id = session['uid']
-    if user_id:
-        return redirect("/dashboard/"+user_id)
+    user_id = session.get('uid')  # Safely get 'uid' from session
+    if user_id:  # Check if user_id exists
+        return redirect(f"/dashboard/{user_id}")
     return render_template("login.html")
+    # return render_template("login.html") 
 
 @app.route('/creditProfiling')
 def creditProfiling():
@@ -108,9 +110,9 @@ def creditProfiling():
 # Signup Route
 @app.route('/signup')
 def signup():
-    user_id = session['uid']
-    if user_id:
-        return redirect("/dashboard/"+user_id)
+    user_id = session.get('uid')  # Safely get 'uid' from session
+    if user_id:  # Check if user_id exists
+        return redirect(f"/dashboard/{user_id}")
     return render_template("signup.html")
 
 # Register Route
@@ -218,6 +220,7 @@ def set_session():
 @app.route('/transactions')
 def transactions():
     return render_template("transaction.html", user=session['uid'])
+
 @app.route('/getUsers', methods=['GET'])
 def get_users():
     try:
@@ -260,8 +263,8 @@ def approve_transaction():
     try:
         data = request.json
         transaction_id = data['transaction_id']
-        user_id = session['uid']
-        #print(user_id)
+        user_id = session.get('uid')  # Safely get 'uid' from session
+
         # Fetch the transaction from pending_transactions
         transaction_ref = db.collection('pending_transactions').document(transaction_id)
         transaction = transaction_ref.get()
@@ -342,7 +345,7 @@ def approve_transaction():
 @app.route('/ledger', methods=['GET'])
 def ledger():
     try:
-        user_id = session['uid']
+        user_id = session.get('uid')
         approved_transactions = db.collection('approved_transactions').stream()
         print(approved_transactions)
         ledger_entries = []
@@ -377,6 +380,7 @@ def logout():
     session.pop("uid", None)  # Remove UID from session
     print("User logged out")
     return redirect("/login")
+
 # In-memory data storage
 users = []  # List of users
 expenses = []  # List of expenses
@@ -471,6 +475,6 @@ def predict():
 
 if __name__ == '__main__':
     # Run the Flask app
-    # app.run(debug=True)
-    port = int(os.environ.get('PORT', 4000))  # Use PORT environment variable or default to 4000
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
+    # port = int(os.environ.get('PORT', 5000))  # Use PORT environment variable or default to 4000
+    # app.run(host='0.0.0.0', port=port)
