@@ -24,10 +24,10 @@ def expire_transaction(tran_id):
 
 user_id=None
 
-# try:
-#     model = joblib.load('model.pkl')
-# except FileNotFoundError:
-#     raise FileNotFoundError("The model file 'model.pkl' was not found. Ensure it exists in the correct path.")
+try:
+    model = joblib.load('model.pkl')
+except FileNotFoundError:
+    raise FileNotFoundError("The model file 'model.pkl' was not found. Ensure it exists in the correct path.")
 
 @app.route("/")
 def home():
@@ -372,7 +372,7 @@ def ledger():
 
 @app.route('/ledgerPage')
 def ledgerPage():
-    return render_template('ledger.html')
+    return render_template('ledger.html', user=session['uid'])
 
 @app.route("/logout")
 def logout():
@@ -451,7 +451,7 @@ def predict():
         required_fields = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7']
         if not all(field in data for field in required_fields):
             return jsonify({'error': 'Missing fields in input data'}), 400
-        
+        print(data)
         # Create a DataFrame for the input data
         new_data = pd.DataFrame([{
             'Age': data['f1'],
@@ -462,16 +462,48 @@ def predict():
             'LastPaymentStatus': data['f6'],
             'Wallet': data['f7'],
         }])
+        print(new_data)
 
         # Predict the credit score
         predicted_score = model.predict(new_data)
-        
+        print(predicted_score)
         # Return the prediction as a JSON response
         return jsonify({'credit_score': int(predicted_score[0])})
     
     except Exception as e:
         # Handle unexpected errors
         return jsonify({'error': str(e)}), 500
+
+    # try:
+    #     # Get the data from the request (JSON format)
+        
+    #     data = request.get_json(force=True)
+    #     print(data)
+    #     # Ensure all required fields are present in the input
+    #     required_fields = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7']
+    #     if not all(field in data for field in required_fields):
+    #         return jsonify({'error': 'Missing fields in input data'}), 400
+        
+    #     # Create a DataFrame for the input data
+    #     new_data = pd.DataFrame([{
+    #         'Age': data['f1'],
+    #         'TotalDebt': data['f2'],
+    #         'MonthlyExpenses': data['f3'],
+    #         'NumberOfTransactions': data['f4'],
+    #         'TotalAmountLent': data['f5'],
+    #         'LastPaymentStatus': data['f6'],
+    #         'Wallet': data['f7'],
+    #     }])
+
+    #     # Predict the credit score
+    #     predicted_score = model.predict(new_data)
+        
+    #     # Return the prediction as a JSON response
+    #     return jsonify({'credit_score': int(predicted_score[0])})
+    
+    # except Exception as e:
+    #     # Handle unexpected errors
+    #     return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     # Run the Flask app

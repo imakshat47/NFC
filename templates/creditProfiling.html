@@ -1,239 +1,167 @@
-<!DOCTYPE html>
-<html lang="en" class="">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="referrer" content="origin" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta
-      name="apple-itunes-app"
-      content="app-id=458023433, app-argument=splitwise://open"
-    />
-    <meta
-      name="description"
-      content="NFC is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!"
-    />
-    <meta name="color-scheme" content="light only" />
+{% extends 'base.html' %} {% block title %}Home - My App{% endblock %} {% block
+localhost %}http://127.0.0.1:5000{% endblock %} {% block content %}
+<style>
+  .risk-high {
+    color: red;
+    font-weight: bold;
+  }
+  .risk-medium {
+    color: orange;
+    font-weight: bold;
+  }
+  .risk-low {
+    color: green;
+    font-weight: bold;
+  }
 
-    <meta
-      property="og:description"
-      content="NFC is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!"
-    />
-    <meta property="og:title" content="Log in" />
-    <meta
-      property="og:image"
-      content="https://assets.splitwise.com/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png"
-    />
-    <meta
-      property="og:image:secure_url"
-      content="https://assets.splitwise.com/assets/core/open-graph-preview-c1b55b0dc7c2b2d5bd6f40bbe34989f3eb2317843246727606cf3e96ee254609.png"
-    />
-    <meta property="og:image:alt" content="Splitwise logo" />
-    <meta property="og:site_name" content="Splitwise" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://secure.splitwise.com/login" />
-    <meta property="fb:app_id" content="293864780643203" />
-    <meta property="og:locale" content="en" />
-    <meta property="og:locale:alternate" content="de" />
-    <meta property="og:locale:alternate" content="es" />
-    <meta property="og:locale:alternate" content="fr" />
-    <meta property="og:locale:alternate" content="id" />
-    <meta property="og:locale:alternate" content="it" />
-    <meta property="og:locale:alternate" content="ja" />
-    <meta property="og:locale:alternate" content="nl" />
-    <meta property="og:locale:alternate" content="pt-BR" />
-    <meta property="og:locale:alternate" content="pt-PT" />
-    <meta property="og:locale:alternate" content="sv" />
-    <meta property="og:locale:alternate" content="th" />
-    <meta property="og:locale:alternate" content="emoji" />
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: hsl(120, 67%, 96%);
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    max-width: 800px;
+    width: 90%;
+    margin: 20px auto;
+  }
 
-    <meta name="twitter:card" content="app" />
-    <meta
-      name="twitter:description"
-      content="Splitwise is a free tool for friends and roommates to track bills and other shared expenses, so that everyone gets paid back. On the web, iPhone, and Android!"
-    />
-    <meta name="twitter:site" content="@splitwise" />
-    <meta name="twitter:app:name:iphone" content="Splitwise" />
-    <meta name="twitter:app:id:iphone" content="458023433" />
-    <meta name="twitter:app:name:googleplay" content="Splitwise" />
-    <meta
-      name="twitter:app:id:googleplay"
-      content="com.Splitwise.SplitwiseMobile"
-    />
+  .circle {
+    background-color: hsl(122, 47%, 71%);
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  }
 
-    <meta name="csrf-param" content="authenticity_token" />
-    <meta
-      name="csrf-token"
-      content="Pejp1c-ddlc7xQ_gwYW0mwT62AwZKppr1xvsldRS7tXgk_zdMzCG1x1ou7ECKrzY-sVFqwu-6Wy4AL7aSv9J1Q"
-    />
+  .circle h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
 
-    <link
-      rel="stylesheet"
-      href="https://assets.splitwise.com/assets/motel-82ff5aea486b5a67c66619aefa9df389a82561c946813551bfee5ed0175bf3a8.css"
-      media="all"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Lato:400,400i,700|Montserrat:400,600,700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link
-      rel="apple-touch-icon-precomposed"
-      href="/apple-touch-icon-precomposed.png"
-    />
+  .circle h1 {
+    margin: 5px 0;
+    font-size: 2.5rem;
+  }
 
-    <link rel="canonical" href="https://www.splitwise.com/login" />
+  .circle p {
+    margin: 0;
+    font-size: 1rem;
+  }
 
-    <script type="importmap" data-turbo-track="reload">
-      {
-        "imports": {
-          "application": "https://assets.splitwise.com/assets/application-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.js",
-          "motel": "https://assets.splitwise.com/assets/motel-9680a85d72b6e12cc54519efa8506651b42f5a043ce30bc3c73bf48ba8af53a7.js",
-          "motel/motel": "https://assets.splitwise.com/assets/motel/motel-c75db22451adcb1f5d0420f4cad79acafbb541772a3771da2be4cca996d1fd6d.js",
-          "charts": "https://assets.splitwise.com/assets/charts-1f38e9276acc590cf23ffc67fb3514a8af03f73a7a02a68981883c97934a1d9f.js",
-          "chartkick": "https://assets.splitwise.com/assets/chartkick-338375253bd80b2f0da7e8b98ae0194bb84ea647cae7d3a2fec94a8cc15f7578.js",
-          "Chart.bundle": "https://assets.splitwise.com/assets/Chart.bundle-93c2270a882e090c5eaceec7a74e8cc7c4e02f7dde0951148b83f9a0be5c8dbb.js",
-          "@rails/ujs": "https://assets.splitwise.com/assets/@rails--ujs-57169a955c1531a628bf30afac33de3edd70cec551c6262363e9915d750c3f6d.js",
-          "@github/webauthn-json/browser-ponyfill": "https://assets.splitwise.com/assets/@github--webauthn-json--browser-ponyfill-c940892aa19f632b24b0ce6709282eceeed185222b9fda7902b0ec9bd72ce954.js"
-        }
-      }
-    </script>
+  .info {
+    width: 100%;
+    text-align: left;
+  }
 
-    <script
-      src="https://assets.splitwise.com/assets/es-module-shims.min-f6e61a1a9f41be4f7947efa52fef6f0b9b265d4a397ce46d39a09e1c1d044578.js"
-      async="async"
-      data-turbo-track="reload"
-    ></script>
-    <script type="module">
-      import "application";
-    </script>
-    <script type="module">
-      import "motel";
-    </script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-      }
-  
-      .container {
-        width: 90%;
-        margin: 0 auto;
-        padding: 20px;
-      }
-  
-      .card-header {
-        background-color: #2e7d32;
-      
-        color: white;
-        font-weight: bold;
-      }
-  
-      .card-body {
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-      }
-  
-      .card {
-       
-        margin-left: 100px;
-        width: 80%;
-        align-self: center;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      }
-  
-      .risk-high { color: red; font-weight: bold; }
-      .risk-medium { color: orange; font-weight: bold; }
-      .risk-low { color: green; font-weight: bold; }
-  
-      .btn-primary {
-        background-color: #2e7d32;
-        color: white;
-        border-radius: 5px;
-        border: none;
-        padding: 10px 20px;
-        margin-left: 20px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-      }
-  
-      .btn-primary:hover {
-        background-color: #1b5e20;
-      }
-  
-      .btn-secondary {
-        background-color: #ffffff;
-        color: #4caf50;
-        border-radius: 5px;
-        border: 1px solid #4caf50;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-      }
-  
-      .btn-secondary:hover {
-        background-color: #f1f1f1;
-      }
-  
-      .alert-danger {
-        color: red;
-      }
-  
-      .text-center {
-        text-align: center;
-      }
-  
-      .text-uppercase {
-        text-transform: uppercase;
-      }
-  
-      .btn-refresh {
-        display: inline-block;
-        margin-top: 20px;
-        text-align: center;
-        cursor: pointer;
-      }
-  
-      .btn-refresh button {
-        background-color: #198754;
-        color: #fff;
-        border: none;
-        padding: 8px 16px;
-        font-size: 16px;
-        border-radius: 4px;
-        transition: all 0.3s;
-      }
-  
-      .btn-refresh button:hover {
-        background-color: #157347;
-        color: #ffffff;
-      }
-    </style>
-  </head>
-  <body class="font-sans subpixel-antialiased login">
-    <!-- Outer Container -->
-    <div class="container mx-auto">
-      <!-- Include Header -->
-      {% include 'header_login.html' %}
-    </div>
+  .title {
+    margin: 0 0 10px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
 
-    <div class="container mt-5lg:w-1/3 xl:w-1/3 ">
+  .info p {
+    margin: 5px 0;
+    font-size: 1rem;
+  }
+
+  .info p span {
+    font-weight: bold;
+  }
+
+  .note {
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #e8f5e9;
+  }
+
+  .buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .btn {
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background-color: #2e7d32;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background-color: #1b5e20;
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    color: #4caf50;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f1f1f1;
+  }
+
+  .lc-table {
+    border-collapse: collapse !important;
+  }
+  .lc-table th {
+    background-color: #212529 !important;
+    color: #000000 !important;
+    text-align: center !important;
+  }
+  .lc-table td {
+    text-align: center !important;
+  }
+  .lc-table tbody tr:hover {
+    background-color: #f1f3f5 !important;
+  }
+  .lc-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa !important;
+  }
+  .btn-refresh {
+    display: inline-block;
+    margin: 20px auto;
+    text-align: center;
+    cursor: pointer;
+  }
+  .btn-refresh button {
+    background-color: #198754;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+  .btn-refresh button:hover {
+    background-color: #157347;
+    color: #000;
+  }
+</style>
+<main class="container mx-auto px-4 md:px-8 pt-8">
+  <div class="lg:flex lg:items-center lg:justify-center">
+    <div class="lg:w-2/3 xl:w-2/3 dashboard">
       <h2 class="text-center">Credit Profiling</h2>
-  
       {% if error %}
       <div class="alert alert-danger mt-3">{{ error }}</div>
       {% else %}
-      <div class="card shadow">
-        <div class="card-header">
+      <div class="card mt-4 shadow">
+        <div class="card-header bg-primary">
           <h4>User Details</h4>
         </div>
         <div class="card-body">
@@ -242,87 +170,80 @@
           <p><strong>Current Balance:</strong> {{ user.currentBalance }}</p>
         </div>
       </div>
-  
-      <div class="card mt-4 shadow" id="prediction-card" style="display: none;">
-        <div class="card-header bg-secondary text-white">
+
+      <div class="card mt-4 shadow" id="prediction-card" style="display: none">
+        <div class="card-header bg-secondary ">
           <h4>Credit Profiling Result</h4>
         </div>
         <div class="card-body">
           <p><strong>Credit Score:</strong> <span id="result-score"></span></p>
-          <p><strong>Credit Profile:</strong> 
+          <p>
+            <strong>Credit Profile:</strong>
             <span id="result-risk" class=""></span>
           </p>
         </div>
       </div>
-  
-      <div class="btn-refresh">
-        <button class="btn btn-primary" id="refresh-btn" onclick="refreshData()">Refresh Data</button>
-      </div>
       {% endif %}
     </div>
-  
+  </div>
+</main>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script>
+  $(document).ready(function () {
+    // Fetch user data and send to /predict
 
-    <!-- Footer Section -->
-    <div class="container mx-auto mt-8">{% include 'footer.html' %}</div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function () {
-        // Fetch user data and send to /predict
-        const userData = {
-            f1: "{{ user.age }}",
-            f2: "{{ user.totalBorrowed }}",
-            f3 : "{{ user.totalBorrowed }}",
-            f4:"{{ user.totalTransaction }}",
-            f5:"{{ user.totalLend }}",
-            f6:1,
-            f7:"{{ user.currentBalance }}"
-        };
+    const userData = {
+      f1: "{{ user.age }}",
+      f2: "{{ user.totalBorrowed }}",
+      f3: "{{ user.totalBorrowed }}",
+      f4: "{{ user.totalTransaction }}",
+      f5: "{{ user.totalLend }}",
+      f6: 1,
+      f7: "{{ user.currentBalance }}",
+    };
+    console.log(userData);
+    $.ajax({
+      url: "/predict",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(userData),
+      success: function (response) {
+        // Display the credit score
+        $("#result-score").text(response.credit_score);
 
-        $.ajax({
-            url: '/predict',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(userData),
-            success: function (response) {
-                // Display the credit score
-                $('#result-score').text(response.credit_score);
-
-                const score = response.credit_score;
-                let riskLevel = "";
-                let riskClass = "";
-                if (score >= 850) {
-                    riskLevel = "Very Good";
-                    riskClass = "risk-low";
-                } else if (score >= 700) {
-                    riskLevel = "Good";
-                    riskClass = "risk-low";
-                } else if (score >= 650) {
-                    riskLevel = "Low Risk";
-                    riskClass = "risk-low";
-                } else if (score >= 500) {
-                    riskLevel = "Medium Risk";
-                    riskClass = "risk-medium";
-                } else {
-                    riskLevel = "High Risk";
-                    riskClass = "risk-high";
-                }
-
-                // Update the UI
-                $('#result-risk').text(riskLevel).attr('class', riskClass);
-                $('#prediction-card').fadeIn();
-            },
-            error: function () {
-                alert('Error while fetching credit score. Please try again.');
-            }
-        });
+        // Calculate risk level on the frontend
+        console.log(response.credit_score);
+        const score = response.credit_score;
+        let riskLevel = "";
+        let riskClass = "";
+        // console.log(score)
+        if (score >= 850) {
+          riskLevel = "Very Good";
+          riskClass = "risk-low";
+        } else if (score >= 700) {
+          riskLevel = "Good";
+          riskClass = "risk-low";
+        } else if (score >= 650) {
+          riskLevel = "Low Risk";
+          riskClass = "risk-low";
+        } else if (score >= 500) {
+          riskLevel = "Medium Risk";
+          riskClass = "risk-medium";
+        } else {
+          riskLevel = "High Risk";
+          riskClass = "risk-high";
+        }
+        console.log(riskLevel);
+        // Update the UI
+        $("#result-risk").text(riskLevel).attr("class", riskClass);
+        $("#prediction-card").fadeIn();
+      },
+      error: function () {
+        alert("Error while fetching credit score. Please try again.");
+      },
     });
+  });
+</script>
 
-    function refreshData() {
-        location.reload();
-    }
-  </script>
-  
-  </body>
-</html>
-
-    
+{% endblock %}

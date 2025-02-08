@@ -580,7 +580,11 @@
 <body class="font-sans subpixel-antialiased" id="landing-page">
     <div class="container mx-auto">
         <!-- Include the header -->
-        {% include 'header.html' %}
+        {% if user %}
+          {% include 'header_login.html' %}
+        {% else %}
+          {% include 'header.html' %}
+        {% endif %}
     </div>
 
     <!-- Dynamic content block -->
