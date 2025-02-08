@@ -53,5 +53,184 @@ localhost %}http://127.0.0.1:5000{% endblock %} {% block content %}
 </div>
 </main>
 </div>
+<script>
+    // Fetch and display the ledger data
+    async function fetchLedger() {
+        try {
+            const response = await fetch('/ledger', { method: 'GET' });
+            const data = await response.json();
+
+            if (response.ok) {
+                const tableBody = document.getElementById('ledger-table-body');
+                tableBody.innerHTML = '';
+
+                data.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${new Date(transaction.date).toLocaleString()}</td>
+                        <td>${transaction.from_user}</td>
+                        <td>${transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</td>
+                        <td>₹${transaction.amount.toLocaleString('en-IN')}</td>
+                        <td>${transaction.to_user}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                if (data.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td colspan="5" class="text-center text-muted">No approved transactions found.</td>`;
+                    tableBody.appendChild(row);
+                }
+            } else {
+                alert('Error fetching transactions: ' + (data.message || 'Unknown error.'));
+            }
+        } catch (error) {
+            console.error('Error fetching ledger:', error);
+        }
+    }
+
+    // Fetch ledger on page load
+    document.addEventListener('DOMContentLoaded', fetchLedger);
+</script>
+<style>
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: hsl(120, 67%, 96%);
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
+      margin: 20px auto;
+    }
+
+    .circle {
+      background-color: hsl(122, 47%, 71%);
+      border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .circle h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .circle h1 {
+      margin: 5px 0;
+      font-size: 2.5rem;
+    }
+
+    .circle p {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .info {
+      width: 100%;
+      text-align: left;
+    }
+
+    .title {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .info p {
+      margin: 5px 0;
+      font-size: 1rem;
+    }
+
+    .info p span {
+      font-weight: bold;
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #e8f5e9;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #2e7d32;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background-color: #1b5e20;
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      color: #4caf50;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f1f1f1;
+    }
+
+    .table {
+          border-collapse: collapse !important;
+      }
+      .table th {
+          background-color: #212529 !important;
+          color: #ffffff !important;
+          text-align: center !important;
+      }
+      .table td {
+          text-align: center !important;
+      }
+      .table tbody tr:hover {
+          background-color: #f1f3f5 !important;
+      }
+      .table tbody tr:nth-child(even) {
+          background-color: #f8f9fa !important;
+      }
+      .btn-refresh {
+          display: inline-block;
+          margin: 20px auto;
+          text-align: center;
+          cursor: pointer;
+      }
+      .btn-refresh button {
+          background-color: #198754;
+          color: #fff;
+          border: none;
+          padding: 8px 16px;
+          font-size: 16px;
+          border-radius: 4px;
+          transition: all 0.3s;
+      }
+      .btn-refresh button:hover {
+          background-color: #157347;
+          color: #ffffff;
+      }
+  </style>
 
 {% endblock %}
